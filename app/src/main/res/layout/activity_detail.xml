@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:attrs="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/nested"
+    tools:context="com.probum.fallintravel.DetailActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_coordi">
+
+    <LinearLayout
+        android:id="@+id/layout_linear01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingRight="8dp"
+        android:weightSum="10">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="9"
+            android:typeface="serif"
+            android:text="@string/app_name"
+            android:textSize="24sp"
+            android:gravity="center"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/fallintravel"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:typeface="serif"
+            android:text="타이틀"
+            android:textSize="24sp"
+            android:gravity="center_vertical"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_favorite_border_black_24dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_addr"
+        android:layout_width="match_parent"
+        android:layout_height="24sp"
+        android:paddingLeft="8dp"
+        android:gravity="center_vertical"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"></android.support.v4.view.ViewPager>
+
+    <com.rd.PageIndicatorView
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        attrs:piv_viewPager="@id/viewPager"
+        attrs:piv_animationType="slide"
+        android:layout_gravity="center"
+        attrs:piv_selectedColor="@color/colorMain"
+        attrs:piv_unselectedColor="#4455ccc0"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="8dp"
+        android:text="개요"
+        android:textSize="40sp"
+        android:layout_gravity="center_vertical"/>
+
+
+        <TextView
+            android:id="@+id/tv_overview"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/intro1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_marginTop="16dp">
+            <TextView
+                android:id="@+id/intro1_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="주체 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro1_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro2_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="연락처 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro2_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro3_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="행사기간 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro3_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro4_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="공연시간 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro4_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro5_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="행사 장소 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro5_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro6_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가능 연령 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro6_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro7_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이용요금 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro7_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro8_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="행사내용 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro8_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:textColor="#83d4ff"
+                android:onClick="clickHttp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/intro9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+            <TextView
+                android:id="@+id/intro9_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="홈페이지 : "
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/intro9_tv2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:textColor="#83d4ff"
+                android:onClick="clickHttp"
+                />
+        </LinearLayout>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="48dp"
+            android:onClick="clickFab"
+            attrs:fabSize="mini"
+            android:backgroundTint="#ffffff"
+            attrs:layout_anchor="@id/layout_linear01"
+            attrs:layout_anchorGravity="bottom|right"
+            />
+    </android.support.design.widget.CoordinatorLayout>
+
+
+
+
+</android.support.v4.widget.NestedScrollView>
