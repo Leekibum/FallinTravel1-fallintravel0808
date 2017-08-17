@@ -188,8 +188,8 @@ public class DetailActivity extends AppCompatActivity {
                         intro3tv2.setText(object.getString("eventstartdate")+"  ~  "+object.getString("eventenddate"));
                         intro4tv2.setText(object.getString("playtime"));
                         intro5tv2.setText(object.getString("eventplace"));
-                        intro6tv2.setText(object.getString("agelimit"));
-                        intro7tv2.setText(object.getString("usetimefestival"));
+                       if (object.has("agelimit"))intro6tv2.setText(object.getString("agelimit"));else intro6.setVisibility(View.GONE);
+                       if (object.has("usetimefestival"))intro7tv2.setText(object.getString("usetimefestival")); else intro7.setVisibility(View.GONE);
                     }
 
                     if (contenttypeid.equals(G.TOUR) || contenttypeid.equals("14")){

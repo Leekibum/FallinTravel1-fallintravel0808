@@ -3,6 +3,7 @@ package com.probum.fallintravel;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
@@ -51,6 +52,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UserProfile result) {
                 Logger.d("UserProfile : " +result);
+                Log.d("userProfile : ",result+"");
                 redirectMainActivity();
             }
         });
@@ -61,7 +63,7 @@ public class KakaoSignupActivity extends AppCompatActivity {
         finish();
     }
     protected void redirectLoginActivity(){
-        Intent intent=new Intent(this,LoginActivity.class);
+        Intent intent=new Intent(this,LoginoutActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();

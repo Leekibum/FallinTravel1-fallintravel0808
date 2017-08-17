@@ -27,7 +27,6 @@ public class MyTextView extends android.support.v7.widget.AppCompatTextView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.e("TextViewSpec",""+widthMeasureSpec+"   "+heightMeasureSpec);
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

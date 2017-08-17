@@ -55,7 +55,7 @@ public class FestivalFragment extends Fragment {
 
         RecyclerView.LayoutManager manager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        adapter = new FestivalAdapter(getActivity(), items,times);
+        adapter = new FestivalAdapter(getActivity(), items);
         recyclerView.setAdapter(adapter);
 
         readfestival();
@@ -79,7 +79,6 @@ public class FestivalFragment extends Fragment {
     void readfestival() {
         String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + G.serviceKey + "&contentTypeId=15&areaCode=" + G.citycode + "&sigunguCode=" + G.sigunguCode + "&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=C&numOfRows=" + numOfRows + "&pageNo=" + pageNo + "&_type=json";
 
-        Log.i("url Festival URl",url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
@@ -143,8 +142,18 @@ public class FestivalFragment extends Fragment {
 
                     String eventstartdate=object.getString("eventstartdate");
                     String eventenddate=object.getString("eventenddate");
-                    items.get(size-1).time=eventstartdate+eventenddate;
-                    Log.i("time ",eventstartdate+eventenddate);
+
+                    //ex) 20161117 2,4,6   20161120
+                    String startYY=eventstartdate.substring(2,4);
+                    String startMM=eventstartdate.substring(4,6);
+                    String startDD=eventstartdate.substring(6,8);
+
+                    String endYY=eventenddate.substring(2,4);
+                    String endMM=eventenddate.substring(4,6);
+                    String endDD=eventenddate.substring(6,8);
+
+
+                    items.get(size-1).setTime(startYY+"."+startMM+"."+startDD+" ~ "+endYY+"."+endMM+"."+endDD);
 
                     adapter.notifyDataSetChanged();
 

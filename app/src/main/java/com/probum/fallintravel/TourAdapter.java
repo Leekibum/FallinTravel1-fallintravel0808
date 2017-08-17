@@ -35,9 +35,9 @@ public class TourAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final ViewHolder myholder = (ViewHolder) holder;
 
-        myholder.tv_title.setText(items.get(position).title);
-        myholder.tv_title.setTag(items.get(position).contentid);
-        myholder.tv_time.setTag(items.get(position).contenttypeid);
+        myholder.tv_title.setText(items.get(position).getTitle());
+        myholder.tv_title.setTag(items.get(position).getContentid());
+        myholder.tv_time.setTag(items.get(position).getContenttypeid());
 
 
         if (items.get(position).time==null) myholder.tv_time.setVisibility(View.GONE);

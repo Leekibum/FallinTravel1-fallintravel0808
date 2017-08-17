@@ -2,15 +2,16 @@ package com.probum.fallintravel;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -21,12 +22,17 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.view.Gravity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.security.MessageDigest;
+
+import static com.kakao.util.helper.Utility.getPackageInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     SearchView searchView;
     Typeface typeface;
-    TextView cityname;
+    TextView cityname,navlogin;
     DrawerLayout drawerLayout;
     boolean isnavislide=false;
     BackPressCloseHandler backPressCloseHandler;
@@ -48,6 +54,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //// 키해시 구하기 !
+        getAppKeyHash();
+
+        SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
+
+        G.cityname=pref.getString("cityname","서울");
+        G.citycode=pref.getString("citycode","1");
+        G.sigunguName=pref.getString("sigunguName","시군구 선택");
+        G.sigunguCode=pref.getString("sigunguCode","1");
+
         navi=(NavigationView)findViewById(R.id.navi);
         tabLayout=(TabLayout)findViewById(R.id.layout_tab);
         viewPager=(ViewPager)findViewById(R.id.pager);
@@ -56,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout=(DrawerLayout)findViewById(R.id.layout_drawer);
         backPressCloseHandler=new BackPressCloseHandler(this);
         setSupportActionBar(toolbar);
+
+        navlogin= (TextView) navi.getHeaderView(0).findViewById(R.id.tv_login);
+
+
 
         typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
 
@@ -97,11 +117,37 @@ public class MainActivity extends AppCompatActivity {
                 isnavislide=false;
             }
         });
-
     }//onCreate
 
+    void changeNavlogin(String text){
+        navlogin.setText(text);
+    }
+
+    void saveData(){
+        SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
+        SharedPreferences.Editor editor =pref.edit();
+        editor.putString("cityname",G.cityname);
+        editor.putString("citycode",G.citycode);
+        editor.putString("sigunguName",G.sigunguName);
+        editor.putString("sigunguCode",G.sigunguCode);
+        editor.commit();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        saveData();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        saveData();
+        super.onPause();
+    }
+
     public void clickLogin(View v){
-        startActivity(new Intent(this,LoginActivity.class));
+        startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGINOUT);
     }
 
     public void clickBack(View v){
@@ -164,18 +210,45 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        cityname.setText(G.cityname + "   " +G.sigunguName);
 
-        pageAdapter.festivalFragment.items.clear();
-        if (pageAdapter.festivalFragment.requestQueue!=null){pageAdapter.festivalFragment.setValue();pageAdapter.festivalFragment.readfestival();}
+        switch (resultCode){
+            case G.SELECT_LOCATION:
+                cityname.setText(G.cityname + "   " +G.sigunguName);
+                saveData();
 
-        pageAdapter.tourFragment.items.clear();
-        if (pageAdapter.tourFragment.requestQueue!=null){pageAdapter.tourFragment.setValue(); pageAdapter.tourFragment.readtour();}
+                pageAdapter.festivalFragment.items.clear();
+                if (pageAdapter.festivalFragment.requestQueue!=null){pageAdapter.festivalFragment.setValue();pageAdapter.festivalFragment.readfestival();}
 
-        pageAdapter.locationFragment.items.clear();
-       if (pageAdapter.locationFragment.requestQueue!=null){pageAdapter.locationFragment.setValue(); pageAdapter.locationFragment.readLocation();}
+                pageAdapter.tourFragment.items.clear();
+                if (pageAdapter.tourFragment.requestQueue!=null){pageAdapter.tourFragment.setValue(); pageAdapter.tourFragment.readtour();}
+
+                pageAdapter.locationFragment.items.clear();
+                if (pageAdapter.locationFragment.requestQueue!=null){pageAdapter.locationFragment.setValue(); pageAdapter.locationFragment.readLocation();}
+
+                break;
+
+            case G.LOGINOUT:
+
+                break;
+        }
+
+          }
+
+    private void getAppKeyHash() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+                Log.d("Hash key", something);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.e("name not found", e.toString());
+        }
     }
-
 
 
 }

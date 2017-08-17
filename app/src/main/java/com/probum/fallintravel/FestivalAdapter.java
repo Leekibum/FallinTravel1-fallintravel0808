@@ -20,12 +20,10 @@ public class FestivalAdapter extends RecyclerView.Adapter {
 
     Context context;
     ArrayList<Item> items;
-    ArrayList<Item> times;
 
-    public FestivalAdapter(Context context, ArrayList<Item> items,ArrayList<Item> times) {
+    public FestivalAdapter(Context context, ArrayList<Item> items) {
         this.context = context;
         this.items = items;
-        this.times=times;
     }
 
     @Override
@@ -38,13 +36,13 @@ public class FestivalAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder holder1=(ViewHolder)holder;
 
-        holder1.tvtitle.setText(items.get(position).title);
-        holder1.tvtitle.setTag(items.get(position).contentid);
+        holder1.tvtitle.setText(items.get(position).getTitle());
+        holder1.tvtitle.setTag(items.get(position).getContentid());
 
-        holder1.tvtime.setText(items.get(position).time);
+        holder1.tvtime.setText(items.get(position).getTime());
 
 
-        holder1.tvtime.setTag(items.get(position).contenttypeid);
+        holder1.tvtime.setTag(items.get(position).getContenttypeid());
 
 //        holder1.tvtime.setVisibility(View.GONE); //날짜를 못고쳐서 안보이게
 

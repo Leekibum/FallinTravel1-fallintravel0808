@@ -28,4 +28,44 @@ public class Item {
         this.time = time;
         this.contentid = contentid;
     }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getFirstimage() {
+        return firstimage;
+    }
+
+    public void setFirstimage(String firstimage) {
+        this.firstimage = firstimage;
+    }
+
+    public String getContentid() {
+        return contentid;
+    }
+
+    public void setContentid(String contentid) {
+        this.contentid = contentid;
+    }
+
+    public String getContenttypeid() {
+        return contenttypeid;
+    }
+
+    public void setContenttypeid(String contenttypeid) {
+        this.contenttypeid = contenttypeid;
+    }
 }
