@@ -46,7 +46,7 @@
             android:src="@mipmap/ic_launcher"
             app:civ_border_color="@color/colorMain"
             app:civ_border_overlay="true"
-            app:civ_border_width="1dp" />
+            app:civ_border_width="0dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -58,15 +58,15 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:layout_gravity=""
                 android:layout_marginLeft="21dp"
                 android:layout_marginStart="21dp"
                 android:layout_marginTop="24dp"
                 android:text="sdgsdgdsg"
-                android:textSize="20sp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tv_login"

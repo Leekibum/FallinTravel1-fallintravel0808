@@ -1,6 +1,7 @@
 package com.probum.fallintravel;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -30,7 +31,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.security.MessageDigest;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
@@ -44,25 +49,24 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     SearchView searchView;
     Typeface typeface;
-    TextView cityname,navlogin;
+    TextView cityname,navlogin,navname;
     DrawerLayout drawerLayout;
     boolean isnavislide=false;
     BackPressCloseHandler backPressCloseHandler;
+    CircleImageView imgcircle;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context=this;
 
         //// 키해시 구하기 !
         getAppKeyHash();
 
-        SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
+        loadData();
 
-        G.cityname=pref.getString("cityname","서울");
-        G.citycode=pref.getString("citycode","1");
-        G.sigunguName=pref.getString("sigunguName","시군구 선택");
-        G.sigunguCode=pref.getString("sigunguCode","1");
 
         navi=(NavigationView)findViewById(R.id.navi);
         tabLayout=(TabLayout)findViewById(R.id.layout_tab);
@@ -73,8 +77,12 @@ public class MainActivity extends AppCompatActivity {
         backPressCloseHandler=new BackPressCloseHandler(this);
         setSupportActionBar(toolbar);
 
+        navname=(TextView)navi.getHeaderView(0).findViewById(R.id.tv_name);
         navlogin= (TextView) navi.getHeaderView(0).findViewById(R.id.tv_login);
+        imgcircle=(CircleImageView)navi.getHeaderView(0).findViewById(R.id.img_circle);
 
+        changenaviitem(G.nickname,G.profile_image);
+        changenaveLogin();
 
 
         typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
@@ -119,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }//onCreate
 
-    void changeNavlogin(String text){
-        navlogin.setText(text);
-    }
 
     void saveData(){
         SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
@@ -130,8 +135,32 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("citycode",G.citycode);
         editor.putString("sigunguName",G.sigunguName);
         editor.putString("sigunguCode",G.sigunguCode);
+        editor.putBoolean("isLogin",G.isLogin);
+        editor.putString("nickname",G.nickname);
+        editor.putString("profile_image",G.profile_image);
         editor.commit();
 
+    }
+
+    void loadData(){
+        SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
+
+        G.cityname=pref.getString("cityname","서울");
+        G.citycode=pref.getString("citycode","1");
+        G.sigunguName=pref.getString("sigunguName","시군구 선택");
+        G.sigunguCode=pref.getString("sigunguCode","1");
+        G.isLogin=pref.getBoolean("isLogin",false);
+        G.nickname=pref.getString("nickname","로그인을 해주세요");
+        G.profile_image=pref.getString("profile_image","https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png");
+    }
+
+    void changenaviitem(String nickname,String profile_image){
+        navname.setText(nickname);
+        Glide.with(this).load(profile_image).into(imgcircle);
+    }
+    void changenaveLogin(){
+        if (G.isLogin==false) navlogin.setText("로그인 ");
+        if (G.isLogin==true) navlogin.setText("로그아웃");
     }
 
     @Override
@@ -147,7 +176,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickLogin(View v){
-        startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGINOUT);
+        if (G.isLogin==false)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGINOUT);
+        else if (G.isLogin==true){
+            sendBroadcast(new Intent("logOut!"));
+            changenaviitem(G.nickname,G.profile_image);
+            changenaveLogin();
+        }
     }
 
     public void clickBack(View v){
@@ -228,7 +262,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case G.LOGINOUT:
-
+                    changenaviitem(G.nickname,G.profile_image);
+                    changenaveLogin();
                 break;
         }
 

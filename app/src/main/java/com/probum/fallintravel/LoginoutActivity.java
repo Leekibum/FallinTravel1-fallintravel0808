@@ -12,6 +12,11 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
@@ -21,7 +26,20 @@ import com.nhn.android.naverlogin.OAuthLoginDefine;
 import com.nhn.android.naverlogin.OAuthLoginHandler;
 import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 
-public class LoginoutActivity extends AppCompatActivity {
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class LoginoutActivity extends AppCompatActivity{
 
     private ISessionCallback callback;
 
@@ -48,7 +66,7 @@ public class LoginoutActivity extends AppCompatActivity {
     private static TextView mOAuthState;
 
     private OAuthLoginButton mOAuthLoginButton;
-
+    public Map<String,String> mUserInfoMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +103,11 @@ public class LoginoutActivity extends AppCompatActivity {
     private void initView() {
         mApiResultText = (TextView) findViewById(R.id.api_result_text);
 
-//        mOauthAT = (TextView) findViewById(R.id.oauth_access_token);
-//        mOauthRT = (TextView) findViewById(R.id.oauth_refresh_token);
-//        mOauthExpires = (TextView) findViewById(R.id.oauth_expires);
-//        mOauthTokenType = (TextView) findViewById(R.id.oauth_type);
-//        mOAuthState = (TextView) findViewById(R.id.oauth_state);
+        mOauthAT = (TextView) findViewById(R.id.oauth_access_token);
+        mOauthRT = (TextView) findViewById(R.id.oauth_refresh_token);
+        mOauthExpires = (TextView) findViewById(R.id.oauth_expires);
+        mOauthTokenType = (TextView) findViewById(R.id.oauth_type);
+        mOAuthState = (TextView) findViewById(R.id.oauth_state);
 
         mOAuthLoginButton = (OAuthLoginButton) findViewById(R.id.buttonOAuthLoginImg);
         mOAuthLoginButton.setOAuthLoginHandler(mOAuthLoginHandler);
@@ -105,6 +123,11 @@ public class LoginoutActivity extends AppCompatActivity {
 //        mOauthExpires.setText(String.valueOf(mOAuthLoginInstance.getExpiresAt(mContext)));
 //        mOauthTokenType.setText(mOAuthLoginInstance.getTokenType(mContext));
 //        mOAuthState.setText(mOAuthLoginInstance.getState(mContext).toString());
+//        Intent intent=getIntent();
+//        if (mUserInfoMap.get("nickname")!=null)intent.putExtra("nickname",mUserInfoMap.get("nickaname"));
+//        setResult(G.LOGINOUT,intent);
+
+
 
     }
 
@@ -118,7 +141,7 @@ public class LoginoutActivity extends AppCompatActivity {
     /**
      * startOAuthLoginActivity() 호출시 인자로 넘기거나, OAuthLoginButton 에 등록해주면 인증이 종료되는 걸 알 수 있다.
      */
-    static private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
+    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
         @Override
         public void run(boolean success) {
             if (success) {
@@ -126,15 +149,18 @@ public class LoginoutActivity extends AppCompatActivity {
                 String refreshToken = mOAuthLoginInstance.getRefreshToken(mContext);
                 long expiresAt = mOAuthLoginInstance.getExpiresAt(mContext);
                 String tokenType = mOAuthLoginInstance.getTokenType(mContext);
-//                mOauthAT.setText(accessToken);
-//                mOauthRT.setText(refreshToken);
-//                mOauthExpires.setText(String.valueOf(expiresAt));
-//                mOauthTokenType.setText(tokenType);
-//                mOAuthState.setText(mOAuthLoginInstance.getState(mContext).toString());
+                mOauthAT.setText(accessToken);
+                mOauthRT.setText(refreshToken);
+                mOauthExpires.setText(String.valueOf(expiresAt));
+                mOauthTokenType.setText(tokenType);
+                mOAuthState.setText(mOAuthLoginInstance.getState(mContext).toString());
+                Log.i("mOAuthState 인증확인" ,mOAuthLoginInstance.getState(mContext).toString());
+                new RefreshTokenTask().execute();
+                new RequestApiTask().execute();
             } else {
                 String errorCode = mOAuthLoginInstance.getLastErrorCode(mContext).getCode();
                 String errorDesc = mOAuthLoginInstance.getLastErrorDesc(mContext);
-                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
             }
         };
     };
@@ -144,29 +170,33 @@ public class LoginoutActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.buttonOAuth: { //인증하기
                 mOAuthLoginInstance.startOauthLoginActivity(this, mOAuthLoginHandler);
+
                 break;
             }
-            case R.id.buttonVerifier: {
-                new RequestApiTask().execute();
-                break;
-            }
-            case R.id.buttonRefresh: {
-                new RefreshTokenTask().execute();
-                break;
-            }
-            case R.id.buttonOAuthLogout: {
+
+            case R.id.buttonOAuthLogout: { //로그아웃
                 mOAuthLoginInstance.logout(mContext);
-                updateView();
-                break;
-            }
-            case R.id.buttonOAuthDeleteToken: {
                 new DeleteTokenTask().execute();
+                G.isLogin=false;
+                G.nickname="로그인을 해주세요";
+                G.profile_image="https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png";
                 break;
             }
             default:
                 break;
         }
     }
+
+    public void logOut(){
+        mOAuthLoginInstance.logout(mContext);
+        new DeleteTokenTask().execute();
+        G.isLogin=false;
+        G.nickname="로그인을 해주세요";
+        G.profile_image="https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png";
+
+    }
+
+    
 
 
     private class DeleteTokenTask extends AsyncTask<Void, Void, Void> {
@@ -191,18 +221,64 @@ public class LoginoutActivity extends AppCompatActivity {
     private class RequestApiTask extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {
-//            mApiResultText.setText((String) ""); //실행되면 doInBackground가 새로 작업하는동안 전의 작업 내용을 지움.
+            mApiResultText.setText((String) ""); //실행되면 doInBackground가 새로 작업하는동안 전의 작업 내용을 지움.
         }
         @Override
         protected String doInBackground(Void... params) {
-            String url = "https://openapi.naver.com/v1/nid/getUserProfile.xml";
+            String url = "https://openapi.naver.com/v1/nid/me";//https://openapi.naver.com/v1/nid/getUserProfile.xml //구시대의 유산
             String at = mOAuthLoginInstance.getAccessToken(mContext);
+            mUserInfoMap=requestNaverUserInfo(mOAuthLoginInstance.requestApi(mContext,at,url));
             return mOAuthLoginInstance.requestApi(mContext, at, url);
         }
         protected void onPostExecute(String content) {
-//            mApiResultText.setText((String) content);  //doinBackground가 종료하면 값을 리턴해줌.
+            mApiResultText.setText((String) content);  //doinBackground가 종료하면 값을 리턴해줌.
+
+
+            if (mUserInfoMap.get("nickname")==null){
+                Toast.makeText(mContext, "로그인 실패하였습니다. 잠시후 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+            }else {
+                G.nickname=mUserInfoMap.get("nickname");
+                G.profile_image=mUserInfoMap.get("profile_image");
+                G.isLogin=true;
+                Toast.makeText(mContext, mUserInfoMap.get("nickname")+"님 로그인을 환영합니다.", Toast.LENGTH_SHORT).show();
+                setResult(G.LOGINOUT,getIntent());
+                finish();
+            }
         }
     }
+
+
+    private HashMap<String,String> requestNaverUserInfo(String response){ //xml 파싱
+        final String f_array[] =new String[6];
+
+        try {
+            JSONObject json=new JSONObject(response);
+
+            Log.i("response",response);
+            json=json.getJSONObject("response");
+            f_array[0]=json.getString("nickname");
+            f_array[1]=json.getString("profile_image");
+            f_array[2]=json.getString("age");
+            f_array[3]=json.getString("gender");
+            f_array[4]=json.getString("id");
+            f_array[5]=json.getString("birthday");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("error",e.toString());
+        }
+
+        HashMap<String,String> resultMap=new HashMap<>();
+        resultMap.put("nickname",f_array[0]);
+        resultMap.put("profile_image",f_array[1]);
+        resultMap.put("age",f_array[2]);
+        resultMap.put("gender",f_array[3]);
+        resultMap.put("id",f_array[4]);
+        resultMap.put("birthday",f_array[5]);
+
+        return resultMap;
+    }
+
 
     private class RefreshTokenTask extends AsyncTask<Void, Void, String> {
         @Override
