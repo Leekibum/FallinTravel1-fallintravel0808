@@ -17,7 +17,8 @@ public class G {
     static String sigunguCode="1";
     static String TOUR="12";
     static String festival="15";
-    static final int LOGINOUT=55;
+    static final int LOGIN=55;
+    static final int LOGOUT=66;
     static final int SELECT_LOCATION=44;
     static boolean isLogin=false;
     static String nickname="로그인을 해주세요";

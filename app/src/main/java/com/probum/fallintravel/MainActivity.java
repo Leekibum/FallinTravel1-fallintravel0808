@@ -176,12 +176,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickLogin(View v){
-        if (G.isLogin==false)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGINOUT);
-        else if (G.isLogin==true){
-            sendBroadcast(new Intent("logOut!"));
-            changenaviitem(G.nickname,G.profile_image);
-            changenaveLogin();
-        }
+        if (G.isLogin==false)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
+        if (G.isLogin==true)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
     }
 
     public void clickBack(View v){
@@ -261,9 +257,13 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
 
-            case G.LOGINOUT:
+            case G.LOGIN:
                     changenaviitem(G.nickname,G.profile_image);
                     changenaveLogin();
+                break;
+            case G.LOGOUT:
+                changenaviitem(G.nickname,G.profile_image);
+                changenaveLogin();
                 break;
         }
 

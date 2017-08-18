@@ -57,13 +57,7 @@ public class LoginoutActivity extends AppCompatActivity{
     private static OAuthLogin mOAuthLoginInstance;
     private static Context mContext;
 
-    /** UI 요소들 */
-    private TextView mApiResultText;
-    private static TextView mOauthAT;
-    private static TextView mOauthRT;
-    private static TextView mOauthExpires;
-    private static TextView mOauthTokenType;
-    private static TextView mOAuthState;
+
 
     private OAuthLoginButton mOAuthLoginButton;
     public Map<String,String> mUserInfoMap;
@@ -84,7 +78,7 @@ public class LoginoutActivity extends AppCompatActivity{
         initData();
         initView();
 
-        this.setTitle("OAuthLoginSample Ver." + OAuthLogin.getVersion());
+        if (G.isLogin==true) logOut();
         if (Build.VERSION.SDK_INT>=21){ //버전 21 이상은 위에 상태바 색 변경경
             getWindow().setStatusBarColor(0xff55ccc0);
         }
@@ -101,13 +95,6 @@ public class LoginoutActivity extends AppCompatActivity{
     }
 
     private void initView() {
-        mApiResultText = (TextView) findViewById(R.id.api_result_text);
-
-        mOauthAT = (TextView) findViewById(R.id.oauth_access_token);
-        mOauthRT = (TextView) findViewById(R.id.oauth_refresh_token);
-        mOauthExpires = (TextView) findViewById(R.id.oauth_expires);
-        mOauthTokenType = (TextView) findViewById(R.id.oauth_type);
-        mOAuthState = (TextView) findViewById(R.id.oauth_state);
 
         mOAuthLoginButton = (OAuthLoginButton) findViewById(R.id.buttonOAuthLoginImg);
         mOAuthLoginButton.setOAuthLoginHandler(mOAuthLoginHandler);
@@ -118,14 +105,7 @@ public class LoginoutActivity extends AppCompatActivity{
 
 
     private void updateView() {
-//        mOauthAT.setText(mOAuthLoginInstance.getAccessToken(mContext));
-//        mOauthRT.setText(mOAuthLoginInstance.getRefreshToken(mContext));
-//        mOauthExpires.setText(String.valueOf(mOAuthLoginInstance.getExpiresAt(mContext)));
-//        mOauthTokenType.setText(mOAuthLoginInstance.getTokenType(mContext));
-//        mOAuthState.setText(mOAuthLoginInstance.getState(mContext).toString());
-//        Intent intent=getIntent();
-//        if (mUserInfoMap.get("nickname")!=null)intent.putExtra("nickname",mUserInfoMap.get("nickaname"));
-//        setResult(G.LOGINOUT,intent);
+
 
 
 
@@ -149,11 +129,7 @@ public class LoginoutActivity extends AppCompatActivity{
                 String refreshToken = mOAuthLoginInstance.getRefreshToken(mContext);
                 long expiresAt = mOAuthLoginInstance.getExpiresAt(mContext);
                 String tokenType = mOAuthLoginInstance.getTokenType(mContext);
-                mOauthAT.setText(accessToken);
-                mOauthRT.setText(refreshToken);
-                mOauthExpires.setText(String.valueOf(expiresAt));
-                mOauthTokenType.setText(tokenType);
-                mOAuthState.setText(mOAuthLoginInstance.getState(mContext).toString());
+
                 Log.i("mOAuthState 인증확인" ,mOAuthLoginInstance.getState(mContext).toString());
                 new RefreshTokenTask().execute();
                 new RequestApiTask().execute();
@@ -165,27 +141,7 @@ public class LoginoutActivity extends AppCompatActivity{
         };
     };
 
-    public void onButtonClick(View v) throws Throwable {
 
-        switch (v.getId()) {
-            case R.id.buttonOAuth: { //인증하기
-                mOAuthLoginInstance.startOauthLoginActivity(this, mOAuthLoginHandler);
-
-                break;
-            }
-
-            case R.id.buttonOAuthLogout: { //로그아웃
-                mOAuthLoginInstance.logout(mContext);
-                new DeleteTokenTask().execute();
-                G.isLogin=false;
-                G.nickname="로그인을 해주세요";
-                G.profile_image="https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png";
-                break;
-            }
-            default:
-                break;
-        }
-    }
 
     public void logOut(){
         mOAuthLoginInstance.logout(mContext);
@@ -193,10 +149,11 @@ public class LoginoutActivity extends AppCompatActivity{
         G.isLogin=false;
         G.nickname="로그인을 해주세요";
         G.profile_image="https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png";
-
+        setResult(G.LOGOUT,getIntent());
+        finish();
     }
 
-    
+
 
 
     private class DeleteTokenTask extends AsyncTask<Void, Void, Void> {
@@ -221,7 +178,7 @@ public class LoginoutActivity extends AppCompatActivity{
     private class RequestApiTask extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {
-            mApiResultText.setText((String) ""); //실행되면 doInBackground가 새로 작업하는동안 전의 작업 내용을 지움.
+         ; //실행되면 doInBackground가 새로 작업하는동안 전의 작업 내용을 지움.
         }
         @Override
         protected String doInBackground(Void... params) {
@@ -231,8 +188,7 @@ public class LoginoutActivity extends AppCompatActivity{
             return mOAuthLoginInstance.requestApi(mContext, at, url);
         }
         protected void onPostExecute(String content) {
-            mApiResultText.setText((String) content);  //doinBackground가 종료하면 값을 리턴해줌.
-
+             //doinBackground가 종료하면 값을 리턴해줌.
 
             if (mUserInfoMap.get("nickname")==null){
                 Toast.makeText(mContext, "로그인 실패하였습니다. 잠시후 다시 시도해주세요", Toast.LENGTH_SHORT).show();
@@ -241,7 +197,7 @@ public class LoginoutActivity extends AppCompatActivity{
                 G.profile_image=mUserInfoMap.get("profile_image");
                 G.isLogin=true;
                 Toast.makeText(mContext, mUserInfoMap.get("nickname")+"님 로그인을 환영합니다.", Toast.LENGTH_SHORT).show();
-                setResult(G.LOGINOUT,getIntent());
+                setResult(G.LOGIN,getIntent());
                 finish();
             }
         }
