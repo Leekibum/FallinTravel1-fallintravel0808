@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     BackPressCloseHandler backPressCloseHandler;
     CircleImageView imgcircle;
     Context context;
+    TextView apptitle;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,35 +68,25 @@ public class MainActivity extends AppCompatActivity {
         getAppKeyHash();
 
         loadData();
+        findIds();
 
-
-        navi=(NavigationView)findViewById(R.id.navi);
-        tabLayout=(TabLayout)findViewById(R.id.layout_tab);
-        viewPager=(ViewPager)findViewById(R.id.pager);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        cityname=(TextView)findViewById(R.id.cityname);
-        drawerLayout=(DrawerLayout)findViewById(R.id.layout_drawer);
         backPressCloseHandler=new BackPressCloseHandler(this);
         setSupportActionBar(toolbar);
 
-        navname=(TextView)navi.getHeaderView(0).findViewById(R.id.tv_name);
-        navlogin= (TextView) navi.getHeaderView(0).findViewById(R.id.tv_login);
-        imgcircle=(CircleImageView)navi.getHeaderView(0).findViewById(R.id.img_circle);
-
         changenaviitem(G.nickname,G.profile_image);
         changenaveLogin();
-
 
         typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
 
         SpannableString spannableString=new SpannableString("여행에 빠지다");
         spannableString.setSpan(new CustomTypefaceSpan("", typeface),0,spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+
         ActionBar actionBar= getSupportActionBar();
-        actionBar.setTitle(spannableString);
+        actionBar.setDisplayShowTitleEnabled(false);
+        apptitle.setText(spannableString);
 
         drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.action_settings,R.string.action_settings);
-
         drawerToggle.syncState();
         drawerLayout.addDrawerListener(drawerToggle);
 
@@ -127,6 +119,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }//onCreate
 
+    void findIds(){
+        navi=(NavigationView)findViewById(R.id.navi);
+        tabLayout=(TabLayout)findViewById(R.id.layout_tab);
+        viewPager=(ViewPager)findViewById(R.id.pager);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        cityname=(TextView)findViewById(R.id.cityname);
+        drawerLayout=(DrawerLayout)findViewById(R.id.layout_drawer);
+        apptitle=(TextView)findViewById(R.id.tv_apptitle);
+        navname=(TextView)navi.getHeaderView(0).findViewById(R.id.tv_name);
+        navlogin= (TextView) navi.getHeaderView(0).findViewById(R.id.tv_login);
+        imgcircle=(CircleImageView)navi.getHeaderView(0).findViewById(R.id.img_circle);
+    }
 
     void saveData(){
         SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         G.sigunguName=pref.getString("sigunguName","시군구 선택");
         G.sigunguCode=pref.getString("sigunguCode","1");
         G.isLogin=pref.getBoolean("isLogin",false);
-        G.nickname=pref.getString("nickname","로그인을 해주세요");
+        G.nickname=pref.getString("nickname"," 로그인을 해주세요 ");
         G.profile_image=pref.getString("profile_image","https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png");
     }
 
@@ -159,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
         Glide.with(this).load(profile_image).into(imgcircle);
     }
     void changenaveLogin(){
-        if (G.isLogin==false) navlogin.setText("로그인 ");
-        if (G.isLogin==true) navlogin.setText("로그아웃");
+        if (G.isLogin==false) navlogin.setText(" 로그인 ");
+        if (G.isLogin==true) navlogin.setText(" 로그아웃 ");
     }
 
     @Override
@@ -194,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_scrolling, menu);
+        //searchview
         final MenuItem item=menu.findItem(R.id.menu_search);
 
         searchView=(SearchView)item.getActionView();
@@ -206,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-                Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+                if (query.length()<2) Toast.makeText(context, "두글자이상 키워드를 입력해주세요!", Toast.LENGTH_SHORT).show();
+                else  Toast.makeText(MainActivity.this, query+query.length(), Toast.LENGTH_SHORT).show();
                 searchView.setIconified(true);
                 item.collapseActionView();
 

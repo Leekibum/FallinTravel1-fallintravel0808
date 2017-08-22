@@ -74,7 +74,7 @@ public class LocationFragment extends Fragment {
     }
 
     void readLocation(){
-        String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+ G.serviceKey+"&contentTypeId=&areaCode="+G.citycode+"&sigunguCode="+G.sigunguCode+"&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=C&numOfRows="+numOfRows+"&pageNo="+pageNo+"&_type=json";
+        String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+ G.serviceKey+"&contentTypeId=25&areaCode="+G.citycode+"&sigunguCode="+G.sigunguCode+"&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=C&numOfRows="+numOfRows+"&pageNo="+pageNo+"&_type=json";
         Log.i("UrlUrlURl",url);
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 

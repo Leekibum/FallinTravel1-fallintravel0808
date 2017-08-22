@@ -1,15 +1,16 @@
 package com.probum.fallintravel;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -38,16 +39,8 @@ public class FestivalAdapter extends RecyclerView.Adapter {
 
         holder1.tvtitle.setText(items.get(position).getTitle());
         holder1.tvtitle.setTag(items.get(position).getContentid());
-
         holder1.tvtime.setText(items.get(position).getTime());
-
-
         holder1.tvtime.setTag(items.get(position).getContenttypeid());
-
-//        holder1.tvtime.setVisibility(View.GONE); //날짜를 못고쳐서 안보이게
-
-
-//        String time1=time.substring(0,4);
 
         if (items.get(position).firstimage.equals("noimage")) {
             Glide.with(context).load(R.drawable.noimageavailable).into(holder1.img);//  나중에 이미지가 없어요 같은 이미지로 변경하기
@@ -80,7 +73,13 @@ public class FestivalAdapter extends RecyclerView.Adapter {
                     Intent intent=new Intent(context,DetailActivity.class);
                     intent.putExtra("contentid",tvtitle.getTag()+"");
                     intent.putExtra("contenttypeid",tvtime.getTag()+"");
-                    context.startActivity(intent);
+                    intent.putExtra("firstimage",items.get(getPosition()).firstimage);
+
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((MainActivity)context,new Pair<View, String>(img,"IMG"));
+                        context.startActivity(intent, options.toBundle());
+                    }
                 }
             });
         }

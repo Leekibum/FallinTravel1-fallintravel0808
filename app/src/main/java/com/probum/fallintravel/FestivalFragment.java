@@ -32,7 +32,6 @@ import java.util.ArrayList;
 public class FestivalFragment extends Fragment {
 
     ArrayList<Item> items = new ArrayList<>();
-    ArrayList<Item> times=new ArrayList<>();
     RecyclerView recyclerView;
     FestivalAdapter adapter;
     RequestQueue requestQueue;
@@ -77,7 +76,7 @@ public class FestivalFragment extends Fragment {
     }
 
     void readfestival() {
-        String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + G.serviceKey + "&contentTypeId=15&areaCode=" + G.citycode + "&sigunguCode=" + G.sigunguCode + "&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=C&numOfRows=" + numOfRows + "&pageNo=" + pageNo + "&_type=json";
+        String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + G.serviceKey + "&contentTypeId=15&areaCode=" + G.citycode + "&sigunguCode=" + G.sigunguCode + "&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=D&numOfRows=" + numOfRows + "&pageNo=" + pageNo + "&_type=json";
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

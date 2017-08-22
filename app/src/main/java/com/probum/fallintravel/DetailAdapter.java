@@ -39,10 +39,11 @@ public class DetailAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         View page=inflater.inflate(R.layout.page,container,false);
-        ImageView img=(ImageView)page.findViewById(R.id.img);
+        MyImageView img=(MyImageView)page.findViewById(R.id.img);
+        img.setScaleType(ImageView.ScaleType.FIT_XY);
         if (imgs.size()==0)img.setImageResource(R.drawable.noimageavailable);
-        else Glide.with(context).load(imgs.get(position)).into(img);
-
+        else if (imgs.get(position).equals("noimage"))img.setImageResource(R.drawable.noimageavailable);
+        else if (!imgs.get(position).equals("noimage"))Glide.with(context).load(imgs.get(position)).into(img);
         container.addView(page);
 
         return page;

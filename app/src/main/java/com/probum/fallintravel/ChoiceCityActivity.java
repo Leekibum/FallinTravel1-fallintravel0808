@@ -75,7 +75,7 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
     public void clickAll(View v){
         Intent intent=getIntent();
-        setResult(22,intent);
+        setResult(G.SELECT_LOCATION,intent);
 //        Toast.makeText(context, "전체 클릭", Toast.LENGTH_SHORT).show();
         G.sigunguName="전체";
         G.sigunguCode="";
@@ -190,5 +190,6 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
     public void tvallnotify() {
         tvall.setText(G.cityname+"   전체");
+
     }
 }

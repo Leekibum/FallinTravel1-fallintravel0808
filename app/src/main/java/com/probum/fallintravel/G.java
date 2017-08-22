@@ -17,6 +17,7 @@ public class G {
     static String sigunguCode="1";
     static String TOUR="12";
     static String festival="15";
+    static String course="25";
     static final int LOGIN=55;
     static final int LOGOUT=66;
     static final int SELECT_LOCATION=44;

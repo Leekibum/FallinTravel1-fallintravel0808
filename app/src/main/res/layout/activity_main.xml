@@ -28,7 +28,21 @@
                 app:layout_collapseMode="pin"
                 android:subtitleTextColor="@color/colorMainDark"
                 app:titleTextColor="@color/colorMainDark"
-                app:popupTheme="@style/AppTheme.NoActionBar" />
+                app:popupTheme="@style/AppTheme.NoActionBar">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_apptitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorMain"
+                        android:gravity="center_horizontal"/>
+                </RelativeLayout>
+
+            </android.support.v7.widget.Toolbar>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/layout_tab"
@@ -41,6 +55,7 @@
                 app:tabIndicatorColor="@color/colorAccent"
                 app:tabIndicatorHeight="4dp"
                 app:tabMode="fixed">
+
 
             </android.support.design.widget.TabLayout>
 
@@ -103,7 +118,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navi_item">
+        app:headerLayout="@layout/navi_item"
+        android:background="#ffffff">
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

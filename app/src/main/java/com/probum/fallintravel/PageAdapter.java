@@ -53,7 +53,7 @@ public class PageAdapter extends FragmentPagerAdapter {
         SpannableString span2=new SpannableString("관광지");
         span2.setSpan(new CustomTypefaceSpan("", typeface),0,span2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        SpannableString span3=new SpannableString("지역별");
+        SpannableString span3=new SpannableString("여행코스");
         span3.setSpan(new CustomTypefaceSpan("", typeface),0,span3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString[] spannableStrings=new SpannableString[]{span1,span2,span3};

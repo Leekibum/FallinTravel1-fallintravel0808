@@ -28,7 +28,7 @@
             android:layout_marginTop="95dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            
+
             android:layout_below="@+id/loginButton"
             android:layout_centerHorizontal="true">
             <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
