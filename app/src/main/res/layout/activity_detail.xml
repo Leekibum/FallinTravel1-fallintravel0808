@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:id="@+id/detail_firstlinear"
     tools:context="com.probum.fallintravel.DetailActivity">
 
     <android.support.design.widget.CoordinatorLayout
@@ -33,7 +34,8 @@
                 app:layout_collapseMode="pin"
                 android:subtitleTextColor="@color/colorMainDark"
                 app:titleTextColor="@color/colorMainDark"
-                app:popupTheme="@style/AppTheme.NoActionBar">
+                app:popupTheme="@style/AppTheme.NoActionBar"
+                android:background="@drawable/titlebackround">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,16 +43,13 @@
                     android:orientation="horizontal"
                     android:paddingRight="6dp"
                     android:weightSum="10">
-                    <TextView
-                        android:id="@+id/tv_apptitle"
+                    <ImageView
+                        android:id="@+id/img_title"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:textSize="20sp"
-                        android:text="@string/app_name"
-                        android:typeface="serif"
-                        android:textColor="@color/colorMain"
-                        android:gravity="center"
-                        android:layout_weight="10"/>
+                        android:layout_weight="10"
+                        android:layout_marginLeft="20dp"/>
                     <ImageView
                         android:id="@+id/img_close"
                         android:layout_width="45dp"
@@ -86,7 +85,7 @@
                         android:id="@+id/tv_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="10"
+                        android:layout_weight="9.9"
                         android:typeface="serif"
                         android:text="타이틀"
                         android:textColor="@color/colorBlack"

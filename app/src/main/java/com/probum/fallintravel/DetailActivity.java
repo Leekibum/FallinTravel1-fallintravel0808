@@ -3,6 +3,7 @@ package com.probum.fallintravel;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,6 +36,8 @@ public class DetailActivity extends AppCompatActivity {
     ArrayList<String> imgs=new ArrayList<>();
     ArrayList<String> subname=new ArrayList<>();
     ArrayList<String> subdetailoverview=new ArrayList<>();
+    TextView[] tv1s=new TextView[9];
+    TextView[] tv2s=new TextView[9];
     DetailAdapter adapter;
     String contentid;
     String contenttypeid;
@@ -46,16 +50,19 @@ public class DetailActivity extends AppCompatActivity {
     ViewPager viewPager;
     TextView intro1tv1,intro2tv1,intro3tv1,intro4tv1,intro5tv1,intro6tv1,intro7tv1,intro8tv1,intro9tv1;
     TextView intro1tv2,intro2tv2,intro3tv2,intro4tv2,intro5tv2,intro6tv2,intro7tv2,intro8tv2,intro9tv2;
-    LinearLayout intro1,intro2,intro3,intro4,intro5,intro6,intro7,intro8,intro9;
+    LinearLayout intro1,intro2,intro3,intro4,intro5,intro6,intro7,intro8,intro9,firstlinear;
+    ImageView imgtitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         requestQueue= Volley.newRequestQueue(this);
 
+        tv1s= new TextView[]{intro1tv1,intro2tv1,intro3tv1,intro4tv1,intro5tv1,intro6tv1,intro7tv1,intro8tv1,intro9tv1};
+        tv2s= new TextView[]{intro1tv2,intro2tv2,intro3tv2,intro4tv2,intro5tv2,intro6tv2,intro7tv2,intro8tv2,intro9tv2};
         findIds();
 
-        Glide.with(this).load(R.mipmap.closemy).into(imgclose);
 
         Intent intent=getIntent();
         contentid=intent.getStringExtra("contentid");
@@ -68,6 +75,7 @@ public class DetailActivity extends AppCompatActivity {
         readInfo();
         readImage();
 
+
         adapter=new DetailAdapter(imgs,getLayoutInflater(),this);
         viewPager.setAdapter(adapter);
 
@@ -79,7 +87,6 @@ public class DetailActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -109,7 +116,20 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-    }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i=0;i<tv1s.length;i++){
+                    tvtitle.invalidate();
+                    tvaddr.invalidate();
+                    tvoverview.invalidate();
+                    tvovername.invalidate();
+                    tv1s[i].invalidate();
+                    tv2s[i].invalidate();
+                }
+            }
+        },400);
+    }//onCreate
 
     void clickFavorite(View v){
 
@@ -120,14 +140,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void clickHttp(View v){
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intro9tv2.getText().toString())));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tv2s[8].getText().toString())));
     }
 
 
     void readCommon(){
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="+G.serviceKey+"&contentTypeId="+contenttypeid+"&contentId="+contentid+"&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&transGuideYN=Y&_type=json";
 
-        Log.i("urlCommon",url);
+        Log.i("urlCommon : ",url);
 
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -140,22 +160,28 @@ public class DetailActivity extends AppCompatActivity {
 
                     subdetailoverview.add(changeText(object.getString("overview")));
 
-                    tvoverview.setText(changeText(object.getString("overview")));
-                    if (object.has("addr1") &&!contenttypeid.equals(G.course))tvaddr.setText("주소  "+object.getString("addr1")+" "+object.getString("addr2"));else tvaddr.setVisibility(View.GONE);
-                    tvtitle.setText(object.getString("title"));
+                    if (object.has("overview"))tvoverview.setText(changeText(object.getString("overview")));
 
-                    if (object.has("homepage"))intro9tv2.setText(changeHomepage(object.getString("homepage")));else intro9.setVisibility(View.GONE);
+                    if (object.has("addr1") &&!contenttypeid.equals(G.course) &&object.has("addr2")){tvaddr.setText("주소  "+object.getString("addr1")+" "+object.getString("addr2"));}
+                    else if (object.has("addr1") &&!contenttypeid.equals(G.course))tvaddr.setText("주소  "+object.getString("addr1"));
+                    else tvaddr.setVisibility(View.GONE);
 
+                    if (object.has("title"))tvtitle.setText(object.getString("title"));
+                    if (object.has("homepage"))tv2s[8].setText(changeHomepage(object.getString("homepage")));else intro9.setVisibility(View.GONE);
+                    if (!object.has("homepage"))intro9.setVisibility(View.GONE);
 //                    if (object.has("firstimage"))imgs.add(object.getString("firstimage"));
                     if (object.has("firstimage2")&&!contenttypeid.equals(G.course))imgs.add(object.getString("firstimage2"));
 
                     adapter.notifyDataSetChanged();
                     pageIndicatorView.setCount(imgs.size());
 
+                    Log.i("tvtitle : ",tvtitle.getText().toString());
 
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e("jsonerror",e.toString());
+                    Toast.makeText(DetailActivity.this, "catch!!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -166,12 +192,13 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonObjectRequest);
+
     }
 
     void readIntro(){
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailIntro?ServiceKey="+G.serviceKey+"&contentTypeId="+contenttypeid+"&contentId="+contentid+"&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&introYN=Y&_type=json";
 
-        Log.i("url intro",url);
+        Log.i("url intro : ",url);
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -182,25 +209,27 @@ public class DetailActivity extends AppCompatActivity {
                     object=object.getJSONObject("item");
 
                     if (contenttypeid.equals(G.festival)){
-                        intro1tv2.setText(object.getString("sponsor1"));
-                        intro2tv2.setText(object.getString("sponsor1tel"));
-                        intro3tv2.setText(object.getString("eventstartdate")+"  ~  "+object.getString("eventenddate"));
-                        intro4tv2.setText(object.getString("playtime"));
-                        intro5tv2.setText(object.getString("eventplace"));
-                       if (object.has("agelimit"))intro6tv2.setText(object.getString("agelimit"));else intro6.setVisibility(View.GONE);
-                       if (object.has("usetimefestival"))intro7tv2.setText(changeText(object.getString("usetimefestival"))); else intro7.setVisibility(View.GONE);
+                        tv2s[0].setText(object.getString("sponsor1"));
+                        tv2s[1].setText(object.getString("sponsor1tel"));
+                        tv2s[2].setText(object.getString("eventstartdate")+"  ~  "+object.getString("eventenddate"));
+                        tv2s[3].setText(object.getString("playtime"));
+                        tv2s[4].setText(object.getString("eventplace"));
+                       if (object.has("agelimit"))tv2s[5].setText(object.getString("agelimit"));else intro6.setVisibility(View.GONE);
+                       if (object.has("usetimefestival"))tv2s[6].setText(changeText(object.getString("usetimefestival"))); else intro7.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
                     }
 
-                    if (contenttypeid.equals(G.TOUR) || contenttypeid.equals("14")){
-                        if (object.has("expagerange")){intro1tv1.setText("체험 가능 연령  "); intro1tv2.setText(object.getString("expagerange"));} else intro1.setVisibility(View.GONE);
-                        if (object.has("expguide") && object.getString("expguide").length()>10){intro2tv1.setText("체험 안내  "); intro2tv2.setText(changeText(object.getString("expguide")));}else intro2.setVisibility(View.GONE);
+                    if (contenttypeid.equals(G.TOUR) || contenttypeid.equals(G.cultural)){
+                        if (object.has("expagerange")){tv1s[0].setText("체험 가능 연령  "); tv2s[0].setText(object.getString("expagerange"));} else intro1.setVisibility(View.GONE);
+                        if (object.has("expguide") && object.getString("expguide").length()>10){tv1s[1].setText("체험 안내  "); tv2s[1].setText(changeText(object.getString("expguide")));}else intro2.setVisibility(View.GONE);
                         Log.i("expguide",object.getString("expguide"));
-                        if (object.has("usetime")){intro3tv1.setText("이용 시간 "); intro3tv2.setText(changeText(object.getString("usetime")));}else intro3.setVisibility(View.GONE);
-                        if (object.has("restdate")){intro4tv1.setText("쉬는날 "); intro4tv2.setText(changeText(object.getString("restdate")));}else intro4.setVisibility(View.GONE);
-                        if (object.has("infocenter")){intro5tv1.setText("문의 및 안내 "); intro5tv2.setText(changeText(object.getString("infocenter")));}else intro5.setVisibility(View.GONE);
+                        if (object.has("usetime")){tv1s[2].setText("이용 시간 "); tv2s[2].setText(changeText(object.getString("usetime")));}else intro3.setVisibility(View.GONE);
+                        if (object.has("restdate")){tv1s[3].setText("쉬는날 "); tv2s[3].setText(changeText(object.getString("restdate")));}else intro4.setVisibility(View.GONE);
+                        if (object.has("infocenter")){tv1s[4].setText("문의 및 안내 "); tv2s[4].setText(changeText(object.getString("infocenter")));}else intro5.setVisibility(View.GONE);
                         intro6.setVisibility(View.GONE);
                         intro7.setVisibility(View.GONE);
                         intro8.setVisibility(View.GONE);
+                        adapter.notifyDataSetChanged();
                     }
 
                 } catch (JSONException e) {
@@ -219,7 +248,7 @@ public class DetailActivity extends AppCompatActivity {
 
     void readInfo(){
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailInfo?ServiceKey="+G.serviceKey+"&contentTypeId="+contenttypeid+"&contentId="+contentid+"&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&listYN=Y&_type=json";
-        Log.i("url Info  Info",url);
+        Log.i("url detailInfo : ",url);
 
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -231,15 +260,20 @@ public class DetailActivity extends AppCompatActivity {
 
                     try {
                         JSONObject objectitem=object.getJSONObject("item");
-                        if (contenttypeid.equals(G.festival)){
-                            intro8tv2.setText(changeText(objectitem.getString("infotext")));
-                            adapter.notifyDataSetChanged();
-                        }
+
+//                        if (object.has("infoname")){
+//                            tv1s[7].setText(changeText(objectitem.getString("infoname")));
+//                            tv2s[7].setText(changeText(objectitem.getString("infotext")));
+//                        }
+
 
                     }catch (Exception e){
                         JSONArray array=object.getJSONArray("item");
                         for (int i=0;i<array.length()+1;i++){
                             object=array.getJSONObject(i);
+
+                            if (object.has("infoname") &&object.getString("infoname").equals("행사내용")){tv2s[7].setText(changeText(object.getString("infotext")));}
+                            else if (object.has("infoname") )
 
                             if (contenttypeid.equals(G.course)) {
                                 if (object.has("subname")) subname.add(object.getString("subname"));
@@ -353,26 +387,28 @@ public class DetailActivity extends AppCompatActivity {
         tvovername=(TextView)findViewById(R.id.tv_overviewname);
         imgclose=(ImageView)findViewById(R.id.img_close);
         imgfavorite=(ImageView)findViewById(R.id.img_favorite);
+        firstlinear=(LinearLayout)findViewById(R.id.detail_firstlinear);
+        imgtitle=(ImageView)findViewById(R.id.img_title);
 
-        intro1tv1=(TextView)findViewById(R.id.intro1_tv1);
-        intro2tv1=(TextView)findViewById(R.id.intro2_tv1);
-        intro3tv1=(TextView)findViewById(R.id.intro3_tv1);
-        intro4tv1=(TextView)findViewById(R.id.intro4_tv1);
-        intro5tv1=(TextView)findViewById(R.id.intro5_tv1);
-        intro6tv1=(TextView)findViewById(R.id.intro6_tv1);
-        intro7tv1=(TextView)findViewById(R.id.intro7_tv1);
-        intro8tv1=(TextView)findViewById(R.id.intro8_tv1);
-        intro9tv1=(TextView)findViewById(R.id.intro8_tv1);
+        tv1s[0]=(TextView)findViewById(R.id.intro1_tv1);
+        tv1s[1]=(TextView)findViewById(R.id.intro2_tv1);
+        tv1s[2]=(TextView)findViewById(R.id.intro3_tv1);
+        tv1s[3]=(TextView)findViewById(R.id.intro4_tv1);
+        tv1s[4]=(TextView)findViewById(R.id.intro5_tv1);
+        tv1s[5]=(TextView)findViewById(R.id.intro6_tv1);
+        tv1s[6]=(TextView)findViewById(R.id.intro7_tv1);
+        tv1s[7]=(TextView)findViewById(R.id.intro8_tv1);
+        tv1s[8]=(TextView)findViewById(R.id.intro9_tv1);
 
-        intro1tv2=(TextView)findViewById(R.id.intro1_tv2);
-        intro2tv2=(TextView)findViewById(R.id.intro2_tv2);
-        intro3tv2=(TextView)findViewById(R.id.intro3_tv2);
-        intro4tv2=(TextView)findViewById(R.id.intro4_tv2);
-        intro5tv2=(TextView)findViewById(R.id.intro5_tv2);
-        intro6tv2=(TextView)findViewById(R.id.intro6_tv2);
-        intro7tv2=(TextView)findViewById(R.id.intro7_tv2);
-        intro8tv2=(TextView)findViewById(R.id.intro8_tv2);
-        intro9tv2=(TextView)findViewById(R.id.intro9_tv2);
+        tv2s[0]=(TextView)findViewById(R.id.intro1_tv2);
+        tv2s[1]=(TextView)findViewById(R.id.intro2_tv2);
+        tv2s[2]=(TextView)findViewById(R.id.intro3_tv2);
+        tv2s[3]=(TextView)findViewById(R.id.intro4_tv2);
+        tv2s[4]=(TextView)findViewById(R.id.intro5_tv2);
+        tv2s[5]=(TextView)findViewById(R.id.intro6_tv2);
+        tv2s[6]=(TextView)findViewById(R.id.intro7_tv2);
+        tv2s[7]=(TextView)findViewById(R.id.intro8_tv2);
+        tv2s[8]=(TextView)findViewById(R.id.intro9_tv2);
 
         intro1=(LinearLayout)findViewById(R.id.intro1);
         intro2=(LinearLayout)findViewById(R.id.intro2);
@@ -383,5 +419,8 @@ public class DetailActivity extends AppCompatActivity {
         intro7=(LinearLayout)findViewById(R.id.intro7);
         intro8=(LinearLayout)findViewById(R.id.intro8);
         intro9=(LinearLayout)findViewById(R.id.intro9);
+
+        Glide.with(this).load(R.drawable.intitlesub).into(imgtitle);
+        Glide.with(this).load(R.mipmap.closefinal).into(imgclose);
     }
 }

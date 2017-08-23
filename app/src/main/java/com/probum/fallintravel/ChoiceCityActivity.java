@@ -64,11 +64,10 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
 
 
-        if (Build.VERSION.SDK_INT>=21){ //버전 21 이상은 위에 상태바 색 변경경
-            getWindow().setStatusBarColor(0xff55ccc0);
-        }
+
 
         choiceCity();
+        choicesigungu();
 
 
     }//onCreate
@@ -79,6 +78,7 @@ public class ChoiceCityActivity extends AppCompatActivity {
 //        Toast.makeText(context, "전체 클릭", Toast.LENGTH_SHORT).show();
         G.sigunguName="전체";
         G.sigunguCode="";
+        if (!G.isFirst)G.isFirst=true;
         finish();
     }
 

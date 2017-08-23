@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="datas">
+        <item>제목순</item>
+        <item>인기순</item>
+        <item>최근순</item>
+        <item>종료순</item>
+
+    </string-array>
+</resources>

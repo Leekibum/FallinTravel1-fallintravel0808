@@ -23,7 +23,7 @@ public class GlobalApplication extends Application {
         instance=this;
         KakaoSDK.init(new KakaoSDKAdapter());
         //        setDefaultFont(this, "DEFAULT", "ssanaiL.ttf");
-        setDefaultFont(this, "SANS_SERIF", "fonts/NanumBarunGothicBold.ttf");
+        setDefaultFont(this, "SANS_SERIF", "fonts/yungothic360.ttf");
         setDefaultFont(this, "SERIF", "ssanaiL.ttf");
     }
     public static Activity gerCurrentActivity(){

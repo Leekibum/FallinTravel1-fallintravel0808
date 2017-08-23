@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -28,6 +30,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
     BackPressCloseHandler backPressCloseHandler;
     CircleImageView imgcircle;
     Context context;
-    TextView apptitle;
     Toolbar toolbar;
+    Spinner spin;
+    ImageView intitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar= getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
-        apptitle.setText(spannableString);
 
         drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.action_settings,R.string.action_settings);
         drawerToggle.syncState();
@@ -99,10 +105,29 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout.setupWithViewPager(viewPager,true);
 
-        if (Build.VERSION.SDK_INT>=21){ //버전 21 이상은 위에 상태바 색 변경경
-           getWindow().setStatusBarColor(0xff55ccc0);
-        }
-        cityname.setText(G.cityname + "   " +G.sigunguName);
+        if (G.isFirst)cityname.setText(G.cityname + " " +G.sigunguName);
+        else if (!G.isFirst)cityname.setText("지역 선택");
+
+        spinnercustom();
+
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==0) G.arrange="A";
+                else if (position==1)G.arrange="B";
+                else if (position==2)G.arrange="C";
+                else if (position==4)G.arrange="D";
+                recyclerItemChange();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
 
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
@@ -119,6 +144,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }//onCreate
 
+    void spinnercustom(){
+        //스피너 색 자바로 바꾸기 .버전 16이상이므로 나는 테마를 줘서
+//        Drawable spinDrawable= spin.getBackground().getConstantState().newDrawable();
+//
+//        spinDrawable.setColorFilter(getResources().getColor(R.color.colorBlack), PorterDuff.Mode.SRC_ATOP);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            spin.setBackground(spinDrawable);
+//        }
+        ArrayAdapter arrayAdapter=ArrayAdapter.createFromResource(this,R.array.datas,R.layout.spinner_item);
+        spin.setAdapter(arrayAdapter);
+        int num = 0;
+        if (G.arrange.equals("A"))num=0; else if (G.arrange.equals("B"))num=1; else if (G.arrange.equals("C")) num=2; else if (G.arrange.equals("D")) num=3;
+        spin.setSelection(num);
+    }
+
     void findIds(){
         navi=(NavigationView)findViewById(R.id.navi);
         tabLayout=(TabLayout)findViewById(R.id.layout_tab);
@@ -126,10 +166,13 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         cityname=(TextView)findViewById(R.id.cityname);
         drawerLayout=(DrawerLayout)findViewById(R.id.layout_drawer);
-        apptitle=(TextView)findViewById(R.id.tv_apptitle);
         navname=(TextView)navi.getHeaderView(0).findViewById(R.id.tv_name);
         navlogin= (TextView) navi.getHeaderView(0).findViewById(R.id.tv_login);
         imgcircle=(CircleImageView)navi.getHeaderView(0).findViewById(R.id.img_circle);
+        spin=(Spinner)findViewById(R.id.spin);
+        intitle=(ImageView)findViewById(R.id.img_title);
+
+        Glide.with(this).load(R.drawable.intitle).into(intitle);
     }
 
     void saveData(){
@@ -140,8 +183,10 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("sigunguName",G.sigunguName);
         editor.putString("sigunguCode",G.sigunguCode);
         editor.putBoolean("isLogin",G.isLogin);
+        editor.putBoolean("isFirst",G.isFirst);
         editor.putString("nickname",G.nickname);
         editor.putString("profile_image",G.profile_image);
+        editor.putString("arrange",G.arrange);
         editor.commit();
 
     }
@@ -155,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
         G.sigunguCode=pref.getString("sigunguCode","1");
         G.isLogin=pref.getBoolean("isLogin",false);
         G.nickname=pref.getString("nickname"," 로그인을 해주세요 ");
+        G.arrange=pref.getString("arrange","D");
+        G.isFirst=pref.getBoolean("isFirst",false);
         G.profile_image=pref.getString("profile_image","https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png");
     }
 
@@ -163,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         Glide.with(this).load(profile_image).into(imgcircle);
     }
     void changenaveLogin(){
-        if (G.isLogin==false) navlogin.setText(" 로그인 ");
+        if (G.isLogin==false) navlogin.setText(" 로그인 하기 ");
         if (G.isLogin==true) navlogin.setText(" 로그아웃 ");
     }
 
@@ -200,12 +247,11 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_scrolling, menu);
         //searchview
         final MenuItem item=menu.findItem(R.id.menu_search);
-
         searchView=(SearchView)item.getActionView();
-        searchView.setInputType(InputType.TYPE_CLASS_TEXT);
         searchView.setIconifiedByDefault(true);
 
-
+        MenuItem heart=menu.findItem(R.id.menu_heart);
+        heart.setEnabled(false);
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -248,17 +294,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch (resultCode){
             case G.SELECT_LOCATION:
-                cityname.setText(G.cityname + "   " +G.sigunguName);
+                cityname.setText(G.cityname + " " +G.sigunguName);
                 saveData();
-
-                pageAdapter.festivalFragment.items.clear();
-                if (pageAdapter.festivalFragment.requestQueue!=null){pageAdapter.festivalFragment.setValue();pageAdapter.festivalFragment.readfestival();}
-
-                pageAdapter.tourFragment.items.clear();
-                if (pageAdapter.tourFragment.requestQueue!=null){pageAdapter.tourFragment.setValue(); pageAdapter.tourFragment.readtour();}
-
-                pageAdapter.locationFragment.items.clear();
-                if (pageAdapter.locationFragment.requestQueue!=null){pageAdapter.locationFragment.setValue(); pageAdapter.locationFragment.readLocation();}
+                recyclerItemChange();
 
                 break;
 
@@ -290,5 +328,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void recyclerItemChange(){
+        pageAdapter.festivalFragment.items.clear();
+        if (pageAdapter.festivalFragment.requestQueue!=null){pageAdapter.festivalFragment.setValue();pageAdapter.festivalFragment.readfestival();}
+
+        pageAdapter.tourFragment.items.clear();
+        if (pageAdapter.tourFragment.requestQueue!=null){pageAdapter.tourFragment.setValue(); pageAdapter.tourFragment.readtour();}
+
+        pageAdapter.locationFragment.items.clear();
+        if (pageAdapter.locationFragment.requestQueue!=null){pageAdapter.locationFragment.setValue(); pageAdapter.locationFragment.readLocation();}
+
+    }
 
 }

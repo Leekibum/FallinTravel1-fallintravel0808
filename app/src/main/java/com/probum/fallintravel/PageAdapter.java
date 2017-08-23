@@ -45,7 +45,7 @@ public class PageAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
 
-        Typeface typeface = Typeface.createFromAsset(asset,"ssanaiL.ttf");
+        Typeface typeface = Typeface.createFromAsset(asset,"fonts/yungothic360.ttf");
 
         SpannableString span1=new SpannableString("축제");
         span1.setSpan(new CustomTypefaceSpan("", typeface),0,span1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
