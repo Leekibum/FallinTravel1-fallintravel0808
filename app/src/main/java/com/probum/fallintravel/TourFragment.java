@@ -51,7 +51,7 @@ public class TourFragment extends Fragment {
         RecyclerView.LayoutManager manager= new GridLayoutManager(getActivity(),2,GridLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
 
-        adapter=new TourAdapter(items,getActivity());
+        adapter=new TourAdapter(items,getActivity(),getActivity());
         recyclerView.setAdapter(adapter);
 
         readtour();

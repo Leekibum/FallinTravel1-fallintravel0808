@@ -6,38 +6,46 @@
     android:layout_height="match_parent"
     tools:context="com.probum.fallintravel.LoginoutActivity">
 
-    <com.kakao.usermgmt.LoginButton
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="184dp"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/loginButton"
-        android:visibility="gone"></com.kakao.usermgmt.LoginButton>
+        android:layout_marginTop="63dp">
+
+        <com.kakao.usermgmt.LoginButton
+            android:id="@+id/com_kakao_login"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginLeft="32dp"/>
+
+    </LinearLayout>
 
 
 
-
-
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="1"
-            android:layout_marginTop="95dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-
-            android:layout_below="@+id/loginButton"
-            android:layout_centerHorizontal="true">
+            android:layout_marginTop="141dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/linearLayout">
             <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
                 android:id="@+id/buttonOAuthLoginImg"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_weight="0.45" />
         </LinearLayout>
-
 
 
 </RelativeLayout>

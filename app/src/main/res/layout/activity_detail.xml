@@ -96,10 +96,10 @@
                         android:id="@+id/img_favorite"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:src="@drawable/ic_favorite_border_black_24dp"
                         android:layout_gravity="center_vertical"
                         android:clickable="true"
-                        android:onClick="clickFavorite"/>
+                        android:onClick="clickFavorite"
+                        android:visibility="invisible"/>
 
                 </LinearLayout>
 
@@ -164,7 +164,7 @@
                         android:id="@+id/intro1_tv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="주체 "
+                        android:text="전화명 "
                         android:layout_marginBottom="7dp"
                         android:textColor="@color/colorBlack"
                         android:gravity="center_vertical"
@@ -198,7 +198,8 @@
                         android:id="@+id/intro2_tv2"
                         android:layout_width="match_parent"
                         android:textColor="@color/colorBlack"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:onClick="clickTel"/>
 
                 </LinearLayout>
 

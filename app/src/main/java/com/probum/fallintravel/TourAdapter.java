@@ -1,5 +1,6 @@
 package com.probum.fallintravel;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -21,10 +22,12 @@ public class TourAdapter extends RecyclerView.Adapter {
 
     ArrayList<Item> items;
     Context context;
+    Activity activity;
 
-    public TourAdapter(ArrayList<Item> items, Context context) {
+    public TourAdapter(ArrayList<Item> items, Context context,Activity activity) {
         this.items = items;
         this.context = context;
+        this.activity=activity;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class TourAdapter extends RecyclerView.Adapter {
                     intent.putExtra("firstimage",items.get(getPosition()).firstimage);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((MainActivity)context,new Pair<View, String>(img,"IMG"));
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,new Pair<View, String>(img,"IMG"));
                         context.startActivity(intent, options.toBundle());
                     }
 

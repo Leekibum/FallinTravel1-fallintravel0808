@@ -132,7 +132,7 @@ public class FestivalFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
 
-                    Log.i("sadf",response.toString());
+                    Log.e("response : ",response.toString());
 
                     JSONObject object=response.getJSONObject("response");
                     object=object.getJSONObject("body");
@@ -142,7 +142,6 @@ public class FestivalFragment extends Fragment {
                     String eventstartdate=object.getString("eventstartdate");
                     String eventenddate=object.getString("eventenddate");
 
-                    //ex) 20161117 2,4,6   20161120
                     String startYY=eventstartdate.substring(2,4);
                     String startMM=eventstartdate.substring(4,6);
                     String startDD=eventstartdate.substring(6,8);
@@ -157,12 +156,14 @@ public class FestivalFragment extends Fragment {
                     adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
+                    Log.e("festival error : ",e.toString());
                 }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+//                Log.e("festival error",error.toString());
             }
         });
         requestQueue.add(jsonObjectRequest);

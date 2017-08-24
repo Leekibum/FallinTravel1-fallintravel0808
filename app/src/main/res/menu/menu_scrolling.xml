@@ -10,8 +10,14 @@
         app:showAsAction="always|collapseActionView"
         />
     <item android:id="@+id/menu_heart"
-        android:title=""
+        android:title="heart"
         android:icon="@drawable/heart"
         android:checkable="true"
         app:showAsAction="always"/>
+
+    <item android:id="@+id/menu_close"
+        android:title="close"
+        android:icon="@mipmap/closefinal"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

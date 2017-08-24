@@ -165,6 +165,8 @@ public class DetailActivity extends AppCompatActivity {
                     if (object.has("addr1") &&!contenttypeid.equals(G.course) &&object.has("addr2")){tvaddr.setText("주소  "+object.getString("addr1")+" "+object.getString("addr2"));}
                     else if (object.has("addr1") &&!contenttypeid.equals(G.course))tvaddr.setText("주소  "+object.getString("addr1"));
                     else tvaddr.setVisibility(View.GONE);
+                    if (object.has("telname"))tv2s[0].setText(object.getString("telname"));else intro1.setVisibility(View.GONE);
+                    if (object.has("tel"))tv2s[1].setText(object.getString("tel"));else intro2.setVisibility(View.GONE);
 
                     if (object.has("title"))tvtitle.setText(object.getString("title"));
                     if (object.has("homepage"))tv2s[8].setText(changeHomepage(object.getString("homepage")));else intro9.setVisibility(View.GONE);
@@ -209,8 +211,8 @@ public class DetailActivity extends AppCompatActivity {
                     object=object.getJSONObject("item");
 
                     if (contenttypeid.equals(G.festival)){
-                        tv2s[0].setText(object.getString("sponsor1"));
-                        tv2s[1].setText(object.getString("sponsor1tel"));
+                        if (object.has("sponsor1") && intro1.getVisibility() ==View.GONE){tv2s[0].setText(object.getString("sponsor1")); intro1.setVisibility(View.VISIBLE);}
+                        if (object.has("sponsor1tel")&&intro2.getVisibility()==View.GONE){tv2s[1].setText(object.getString("sponsor1tel")); intro2.setVisibility(View.VISIBLE);}
                         tv2s[2].setText(object.getString("eventstartdate")+"  ~  "+object.getString("eventenddate"));
                         tv2s[3].setText(object.getString("playtime"));
                         tv2s[4].setText(object.getString("eventplace"));
@@ -220,14 +222,11 @@ public class DetailActivity extends AppCompatActivity {
                     }
 
                     if (contenttypeid.equals(G.TOUR) || contenttypeid.equals(G.cultural)){
-                        if (object.has("expagerange")){tv1s[0].setText("체험 가능 연령  "); tv2s[0].setText(object.getString("expagerange"));} else intro1.setVisibility(View.GONE);
-                        if (object.has("expguide") && object.getString("expguide").length()>10){tv1s[1].setText("체험 안내  "); tv2s[1].setText(changeText(object.getString("expguide")));}else intro2.setVisibility(View.GONE);
-                        Log.i("expguide",object.getString("expguide"));
-                        if (object.has("usetime")){tv1s[2].setText("이용 시간 "); tv2s[2].setText(changeText(object.getString("usetime")));}else intro3.setVisibility(View.GONE);
-                        if (object.has("restdate")){tv1s[3].setText("쉬는날 "); tv2s[3].setText(changeText(object.getString("restdate")));}else intro4.setVisibility(View.GONE);
-                        if (object.has("infocenter")){tv1s[4].setText("문의 및 안내 "); tv2s[4].setText(changeText(object.getString("infocenter")));}else intro5.setVisibility(View.GONE);
-                        intro6.setVisibility(View.GONE);
-                        intro7.setVisibility(View.GONE);
+                        if (object.has("expagerange")){tv1s[2].setText("체험 가능 연령  "); tv2s[2].setText(object.getString("expagerange"));} else intro3.setVisibility(View.GONE);
+                        if (object.has("expguide") && object.getString("expguide").length()>10){tv1s[3].setText("체험 안내  "); tv2s[3].setText(changeText(object.getString("expguide")));}else intro4.setVisibility(View.GONE);
+                        if (object.has("usetime")){tv1s[4].setText("이용 시간 "); tv2s[4].setText(changeText(object.getString("usetime")));}else intro5.setVisibility(View.GONE);
+                        if (object.has("restdate")){tv1s[5].setText("쉬는날 "); tv2s[5].setText(changeText(object.getString("restdate")));}else intro6.setVisibility(View.GONE);
+                        if (object.has("infocenter")){tv1s[6].setText("문의 및 안내 "); tv2s[6].setText(changeText(object.getString("infocenter")));}else intro7.setVisibility(View.GONE);
                         intro8.setVisibility(View.GONE);
                         adapter.notifyDataSetChanged();
                     }
@@ -245,6 +244,7 @@ public class DetailActivity extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequest);
     }
+
 
     void readInfo(){
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailInfo?ServiceKey="+G.serviceKey+"&contentTypeId="+contenttypeid+"&contentId="+contentid+"&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&listYN=Y&_type=json";
@@ -315,6 +315,8 @@ public class DetailActivity extends AppCompatActivity {
 
     void readImage(){
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailImage?ServiceKey="+G.serviceKey+"&contentTypeId=&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&contentId="+contentid+"&imageYN=Y&_type=json";
+        Log.i("url Image",url);
+
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -422,5 +424,11 @@ public class DetailActivity extends AppCompatActivity {
 
         Glide.with(this).load(R.drawable.intitlesub).into(imgtitle);
         Glide.with(this).load(R.mipmap.closefinal).into(imgclose);
+        Glide.with(this).load(R.drawable.ic_favorite_border_black_24dp).into(imgfavorite);
+    }
+
+    public void clickTel(View v){
+        String tel="tel:"+tv2s[1].getText().toString();
+        startActivity(new Intent("android.intent.action.DIAL",Uri.parse(tel)));
     }
 }

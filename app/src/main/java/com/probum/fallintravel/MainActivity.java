@@ -4,13 +4,7 @@ package com.probum.fallintravel;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -22,11 +16,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,11 +30,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.security.MessageDigest;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.kakao.util.helper.Utility.getPackageInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,15 +56,13 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     Spinner spin;
     ImageView intitle;
+    String keyword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context=this;
-
-        //// 키해시 구하기 !
-        getAppKeyHash();
 
         loadData();
         findIds();
@@ -83,11 +73,9 @@ public class MainActivity extends AppCompatActivity {
         changenaviitem(G.nickname,G.profile_image);
         changenaveLogin();
 
-        typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
-
-        SpannableString spannableString=new SpannableString("여행에 빠지다");
-        spannableString.setSpan(new CustomTypefaceSpan("", typeface),0,spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+//        typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
+//        SpannableString spannableString=new SpannableString("여행에 빠지다");
+//        spannableString.setSpan(new CustomTypefaceSpan("", typeface),0,spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         ActionBar actionBar= getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -209,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         navname.setText(nickname);
         Glide.with(this).load(profile_image).into(imgcircle);
     }
+
     void changenaveLogin(){
         if (G.isLogin==false) navlogin.setText(" 로그인 하기 ");
         if (G.isLogin==true) navlogin.setText(" 로그아웃 ");
@@ -227,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickLogin(View v){
-        if (G.isLogin==false)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
+        if (G.isLogin==false )startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
         if (G.isLogin==true)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
     }
 
@@ -258,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (query.length()<2) Toast.makeText(context, "두글자이상 키워드를 입력해주세요!", Toast.LENGTH_SHORT).show();
-                else  Toast.makeText(MainActivity.this, query+query.length(), Toast.LENGTH_SHORT).show();
+                else searchgood(query);
                 searchView.setIconified(true);
                 item.collapseActionView();
 
@@ -272,19 +261,29 @@ public class MainActivity extends AppCompatActivity {
         });
         return super.onCreateOptionsMenu(menu);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
+    void searchgood(String query){
+        Intent intent=new Intent(this,AdditionActivity.class);
+        try {
+           keyword= URLEncoder.encode(query,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey="+G.serviceKey+"&keyword="+keyword+"&areaCode=&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=";
+        intent.putExtra("url",url);
+        startActivity(intent);
     }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public void clickChoiceCity(View v){
 
-        Intent intent=new Intent(this,ChoiceCityActivity.class);
-        startActivityForResult(intent,22);
+        startActivityForResult(new Intent(this,ChoiceCityActivity.class),22);
 
 //        Toast.makeText(this, "지역 선택", Toast.LENGTH_SHORT).show();
     }
@@ -312,21 +311,6 @@ public class MainActivity extends AppCompatActivity {
 
           }
 
-    private void getAppKeyHash() {
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                String something = new String(Base64.encode(md.digest(), 0));
-                Log.d("Hash key", something);
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            Log.e("name not found", e.toString());
-        }
-    }
 
     void recyclerItemChange(){
         pageAdapter.festivalFragment.items.clear();
