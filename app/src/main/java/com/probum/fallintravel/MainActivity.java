@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         backPressCloseHandler=new BackPressCloseHandler(this);
         setSupportActionBar(toolbar);
 
-        changenaviitem(G.nickname,G.profile_image);
+        changenaviitem();
         changenaveLogin();
 
 //        typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
@@ -92,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(pageAdapter);
 
         tabLayout.setupWithViewPager(viewPager,true);
+
+        //tab layout set position
+//        TabLayout.Tab tab=tabLayout.getTabAt(2);
+//        tab.select();
 
         if (G.isFirst)cityname.setText(G.cityname + " " +G.sigunguName);
         else if (!G.isFirst)cityname.setText("지역 선택");
@@ -193,9 +197,9 @@ public class MainActivity extends AppCompatActivity {
         G.profile_image=pref.getString("profile_image","https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png");
     }
 
-    void changenaviitem(String nickname,String profile_image){
-        navname.setText(nickname);
-        Glide.with(this).load(profile_image).into(imgcircle);
+    void changenaviitem(){
+        if (G.isLogin)navname.setText(G.nickname+" 님");else navname.setText(G.nickname);
+        Glide.with(this).load(G.profile_image).into(imgcircle);
     }
 
     void changenaveLogin(){
@@ -210,9 +214,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        if (G.isFirst)cityname.setText(G.cityname + " " +G.sigunguName);
+        else if (!G.isFirst)cityname.setText("지역 선택");
+        int num = 0;
+        if (G.arrange.equals("A"))num=0; else if (G.arrange.equals("B"))num=1; else if (G.arrange.equals("C")) num=2; else if (G.arrange.equals("D")) num=3;
+        spin.setSelection(num);
+        super.onStart();
+        changenaveLogin();
+        changenaviitem();
+    }
+
+    @Override
     protected void onPause() {
         saveData();
         super.onPause();
+    }
+
+    void changeNaviPosition(int num){
+        TabLayout.Tab tab=tabLayout.getTabAt(num);
+        tab.select();
+    }
+
+    public void clickNavItem(View v){
+        switch (v.getId()){
+
+            case R.id.linear_festival:
+                changeNaviPosition(0);
+                drawerLayout.closeDrawer(navi);
+                break;
+
+            case R.id.linear_tour:
+                changeNaviPosition(1);
+                drawerLayout.closeDrawer(navi);
+                break;
+
+            case R.id.linear_course:
+                changeNaviPosition(2);
+                drawerLayout.closeDrawer(navi);
+                break;
+        }
     }
 
     public void clickLogin(View v){
@@ -239,6 +280,8 @@ public class MainActivity extends AppCompatActivity {
         searchView=(SearchView)item.getActionView();
         searchView.setIconifiedByDefault(true);
 
+
+
         MenuItem heart=menu.findItem(R.id.menu_heart);
         heart.setEnabled(false);
 
@@ -261,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         });
         return super.onCreateOptionsMenu(menu);
     }
+
     void searchgood(String query){
         Intent intent=new Intent(this,AdditionActivity.class);
         try {
@@ -268,24 +312,15 @@ public class MainActivity extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey="+G.serviceKey+"&keyword="+keyword+"&areaCode=&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=";
-        intent.putExtra("url",url);
-        startActivity(intent);
+//        String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey="+G.serviceKey+"&keyword="+keyword+"&areaCode=&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=";
+        intent.putExtra("what","searchKeyword");
+        intent.putExtra("query",query);
+        intent.putExtra("keyword",keyword);
+        startActivityForResult(intent,88);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        int id = item.getItemId();
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     public void clickChoiceCity(View v){
-
         startActivityForResult(new Intent(this,ChoiceCityActivity.class),22);
-
-//        Toast.makeText(this, "지역 선택", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -300,12 +335,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case G.LOGIN:
-                    changenaviitem(G.nickname,G.profile_image);
+                    changenaviitem();
                     changenaveLogin();
                 break;
             case G.LOGOUT:
-                changenaviitem(G.nickname,G.profile_image);
+                changenaviitem();
                 changenaveLogin();
+                break;
+            case 88:
+                changeNaviPosition(data.getIntExtra("clickAddition",0));
                 break;
         }
 

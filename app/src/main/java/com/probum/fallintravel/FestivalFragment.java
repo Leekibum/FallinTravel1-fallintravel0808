@@ -1,9 +1,12 @@
 package com.probum.fallintravel;
 
+import android.graphics.Color;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -93,6 +96,7 @@ public class FestivalFragment extends Fragment {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         obj = jsonArray.getJSONObject(i);
+                        valueZero();
 
                         String title = obj.getString("title");
                         String contentid = obj.getString("contentid");
@@ -108,8 +112,7 @@ public class FestivalFragment extends Fragment {
                     }
 
 
-                } catch (JSONException e) {
-                }
+                } catch (JSONException e) {valueZero();}
 
             }
         }, new Response.ErrorListener() {
@@ -167,6 +170,19 @@ public class FestivalFragment extends Fragment {
             }
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    void valueZero(){
+        if (items.size()==0){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                recyclerView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.noimageavailable));
+            } else {
+                recyclerView.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.noimageavailable));
+            }
+        }
+        else if (items.size()>0){
+            recyclerView.setBackgroundColor(Color.WHITE);
+        }
     }
 
 }

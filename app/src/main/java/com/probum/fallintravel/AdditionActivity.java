@@ -2,8 +2,12 @@ package com.probum.fallintravel;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,7 +21,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -36,6 +44,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AdditionActivity extends AppCompatActivity {
 
     ArrayList<Item> items=new ArrayList<>();
@@ -51,6 +61,12 @@ public class AdditionActivity extends AppCompatActivity {
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
+    Spinner spin;
+    TextView cityname,title,navname,navlogin;
+    String citycode="",sigunguCode="";
+    NavigationView navi;
+    boolean isnavislide=false;
+    CircleImageView imgcircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +77,10 @@ public class AdditionActivity extends AppCompatActivity {
         intent=getIntent();
         findIds();
         requestQueue= Volley.newRequestQueue(this);
+        cityname.setText("전국 ");
+
+        changenaviitem();
+        changenaveLogin();
 
         RecyclerView.LayoutManager manager= new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
@@ -72,10 +92,28 @@ public class AdditionActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);
         drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.action_settings,R.string.action_settings);
 
-        //네비게이션 드로어어
-//       drawerToggle.syncState();
-//        drawerLayout.addDrawerListener(drawerToggle);
+        spinnercustom();
 
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==0) G.arrange="A";
+                else if (position==1)G.arrange="B";
+                else if (position==2)G.arrange="C";
+                else if (position==4)G.arrange="D";
+                recyclerItemChange();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //네비게이션 드로어어
+       drawerToggle.syncState();
+        drawerLayout.addDrawerListener(drawerToggle);
         readurl();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -92,6 +130,63 @@ public class AdditionActivity extends AppCompatActivity {
         });
     }//onCreate
 
+    void selecturl(){
+        String type=intent.getStringExtra("what");
+        String KorService="KorService";
+        if (type.equals("searchKeyword")){
+            url="http://api.visitkorea.or.kr/openapi/service/rest/"+KorService+"/"+type+"?ServiceKey="+G.serviceKey+"&keyword="+intent.getStringExtra("keyword")+"&areaCode="+citycode+"&sigunguCode="+sigunguCode+"&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange="+G.arrange+"&numOfRows=12&pageNo="+pageNo+"&_type=json";
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode){
+            case G.SELECT_LOCATION:
+                citycode=G.citycode;
+                sigunguCode=G.sigunguCode;
+                cityname.setText(G.cityname + " " +G.sigunguName);
+                saveData();
+                recyclerItemChange();
+                break;
+            case G.LOGIN:
+                changenaviitem();
+                changenaveLogin();
+                break;
+            case G.LOGOUT:
+                changenaviitem();
+                changenaveLogin();
+                break;
+
+        }
+    }
+
+    private void recyclerItemChange() {
+        items.clear();
+        pageNo=1;
+        readurl();
+    }
+
+    void saveData(){
+        SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);//xml파일
+        SharedPreferences.Editor editor =pref.edit();
+        editor.putString("cityname",G.cityname);
+        editor.putString("citycode",G.citycode);
+        editor.putString("sigunguName",G.sigunguName);
+        editor.putString("sigunguCode",G.sigunguCode);
+        editor.putBoolean("isLogin",G.isLogin);
+        editor.putBoolean("isFirst",G.isFirst);
+        editor.putString("nickname",G.nickname);
+        editor.putString("profile_image",G.profile_image);
+        editor.putString("arrange",G.arrange);
+        editor.commit();
+
+    }
+
+
+    public void clickChoiceCity(View v){
+        startActivityForResult(new Intent(this,ChoiceCityActivity.class),22);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -148,6 +243,9 @@ public class AdditionActivity extends AppCompatActivity {
         }
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey="+G.serviceKey+"&keyword="+keyword+"&areaCode=&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=";
         intent.putExtra("url",url);
+        intent.putExtra("what","searchKeyword");
+        intent.putExtra("query",query);
+        intent.putExtra("keyword",keyword);
         startActivity(intent);
         finish();
     }
@@ -157,12 +255,27 @@ public class AdditionActivity extends AppCompatActivity {
         recyclerView=(RecyclerView)findViewById(R.id.layout_recycler);
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         drawerLayout=(DrawerLayout)findViewById(R.id.layout_drawer);
+        spin=(Spinner)findViewById(R.id.spin);
+        cityname=(TextView)findViewById(R.id.cityname);
+        title=(TextView)findViewById(R.id.tv_title);
+        navi=(NavigationView)findViewById(R.id.navi);
+        navname=(TextView)navi.getHeaderView(0).findViewById(R.id.tv_name);
+        navlogin= (TextView) navi.getHeaderView(0).findViewById(R.id.tv_login);
+        imgcircle=(CircleImageView)navi.getHeaderView(0).findViewById(R.id.img_circle);
 
         Glide.with(this).load(R.drawable.intitle).into(imgtitle);
+        if (intent.getStringExtra("what").equals("searchKeyword")){
+            imgtitle.setVisibility(View.INVISIBLE);
+            title.setVisibility(View.VISIBLE);
+            Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/210manB.ttf");
+            title.setTypeface(typeface);
+            title.setText(intent.getStringExtra("query"));
+
+        }
     }
 
     void readurl(){
-        url=intent.getStringExtra("url")+pageNo+"&_type=json";
+        selecturl();
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -172,7 +285,7 @@ public class AdditionActivity extends AppCompatActivity {
                     object=object.getJSONObject("items");
                     JSONArray array=object.getJSONArray("item");
                     for (int i=0;i<array.length();i++){
-                        changeBackground();
+                        valueZero();
                         object=array.getJSONObject(i);
                         String title=object.getString("title");
                         String contentid=object.getString("contentid");
@@ -185,7 +298,7 @@ public class AdditionActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    changeBackground();
+                    valueZero();
                 }
 
             }
@@ -199,7 +312,7 @@ public class AdditionActivity extends AppCompatActivity {
 
     }
 
-    void changeBackground(){
+    void valueZero(){
         if (items.size()==0){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 recyclerView.setBackground(ContextCompat.getDrawable(this, R.drawable.noimageavailable));
@@ -212,7 +325,54 @@ public class AdditionActivity extends AppCompatActivity {
         }
     }
 
+    void spinnercustom(){
+
+        ArrayAdapter arrayAdapter=ArrayAdapter.createFromResource(this,R.array.datas,R.layout.spinner_item);
+        spin.setAdapter(arrayAdapter);
+        int num = 0;
+        if (G.arrange.equals("A"))num=0; else if (G.arrange.equals("B"))num=1; else if (G.arrange.equals("C")) num=2; else if (G.arrange.equals("D")) num=3;
+        spin.setSelection(num);
+    }
+
+    void changenaviitem(){
+        if (G.isLogin)navname.setText(G.nickname+" 님");else navname.setText(G.nickname);
+        Glide.with(this).load(G.profile_image).into(imgcircle);
+    }
+
+    void changenaveLogin(){
+        if (G.isLogin==false) navlogin.setText(" 로그인 하기 ");
+        if (G.isLogin==true) navlogin.setText(" 로그아웃 ");
+    }
+
     public void clickFab(View v){
         finish();
+    }
+
+    public void clickLogin(View v){
+        if (G.isLogin==false )startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
+        if (G.isLogin==true)startActivityForResult(new Intent(this,LoginoutActivity.class),G.LOGIN);
+    }
+
+    public void clickNavItem(View v){
+        Intent intent1=new Intent(this,MainActivity.class);
+        switch (v.getId()){
+            case R.id.linear_festival:
+                intent1.putExtra("clickAddition",0);
+                setResult(88,intent1);
+                finish();
+                break;
+
+            case R.id.linear_tour:
+                intent1.putExtra("clickAddition",1);
+                setResult(88,intent1);
+                finish();
+                break;
+
+            case R.id.linear_course:
+                intent1.putExtra("clickAddition",2);
+                setResult(88,intent1);
+                finish();
+                break;
+        }
     }
 }

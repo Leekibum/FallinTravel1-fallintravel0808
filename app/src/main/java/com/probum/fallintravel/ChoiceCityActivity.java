@@ -72,6 +72,15 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
     }//onCreate
 
+    public void clickAllCountry(View v){
+        setResult(G.SELECT_LOCATION);
+        G.cityname="전국";
+        G.citycode="";
+        G.sigunguName="";
+        G.sigunguCode="";
+        finish();
+    }
+
     public void clickAll(View v){
         Intent intent=getIntent();
         setResult(G.SELECT_LOCATION,intent);
@@ -144,6 +153,7 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
 
     void choicesigungu(){
+        if (G.citycode=="")return;
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaCode?ServiceKey="+G.serviceKey+"&areaCode="+G.citycode+"&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=AppTesting&_type=json";
 
         choiceCityItems2.clear();

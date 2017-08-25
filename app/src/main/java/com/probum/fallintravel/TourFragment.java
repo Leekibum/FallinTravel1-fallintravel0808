@@ -1,7 +1,10 @@
 package com.probum.fallintravel;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -74,6 +77,7 @@ public class TourFragment extends Fragment {
 
     void readtour(){
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+ G.serviceKey+"&contentTypeId=12&areaCode="+G.citycode+"&sigunguCode="+G.sigunguCode+"&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange="+G.arrange+"&numOfRows="+numOfRows+"&pageNo="+pageNo+"&_type=json";
+//        String url="http://nsdfdsf.com"; //트래픽 초과 안나게 !
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -88,6 +92,7 @@ public class TourFragment extends Fragment {
 
                     for (int i=0;i<jsonArray.length();i++){
                         obj=jsonArray.getJSONObject(i);
+                        valueZero();
 
                         String title=obj.getString("title");
                         String contentid=obj.getString("contentid");
@@ -100,7 +105,7 @@ public class TourFragment extends Fragment {
                     }
 
 
-                } catch (JSONException e) { }
+                } catch (JSONException e) { valueZero();}
 
             }
         }, new Response.ErrorListener() {
@@ -112,5 +117,18 @@ public class TourFragment extends Fragment {
 
     public void setValue() {
         pageNo=1;
+    }
+
+    void valueZero(){
+        if (items.size()==0){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                recyclerView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.noimageavailable));
+            } else {
+                recyclerView.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.noimageavailable));
+            }
+        }
+        else if (items.size()>0){
+            recyclerView.setBackgroundColor(Color.WHITE);
+        }
     }
 }
