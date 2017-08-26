@@ -24,11 +24,6 @@ public class Item {
         this.contenttypeid=contenttypeid;
     }
 
-    public Item(String time, String contentid) {
-        this.time = time;
-        this.contentid = contentid;
-    }
-
     public String getTime() {
         return time;
     }

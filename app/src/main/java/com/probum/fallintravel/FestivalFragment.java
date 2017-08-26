@@ -1,9 +1,12 @@
 package com.probum.fallintravel;
 
+import android.graphics.Color;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,7 +35,6 @@ import java.util.ArrayList;
 public class FestivalFragment extends Fragment {
 
     ArrayList<Item> items = new ArrayList<>();
-    ArrayList<Item> times=new ArrayList<>();
     RecyclerView recyclerView;
     FestivalAdapter adapter;
     RequestQueue requestQueue;
@@ -77,7 +79,7 @@ public class FestivalFragment extends Fragment {
     }
 
     void readfestival() {
-        String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + G.serviceKey + "&contentTypeId=15&areaCode=" + G.citycode + "&sigunguCode=" + G.sigunguCode + "&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=C&numOfRows=" + numOfRows + "&pageNo=" + pageNo + "&_type=json";
+        String url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + G.serviceKey + "&contentTypeId=15&areaCode=" + G.citycode + "&sigunguCode=" + G.sigunguCode + "&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange="+G.arrange+"&numOfRows=" + numOfRows + "&pageNo=" + pageNo + "&_type=json";
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -94,6 +96,7 @@ public class FestivalFragment extends Fragment {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         obj = jsonArray.getJSONObject(i);
+                        valueZero();
 
                         String title = obj.getString("title");
                         String contentid = obj.getString("contentid");
@@ -109,8 +112,7 @@ public class FestivalFragment extends Fragment {
                     }
 
 
-                } catch (JSONException e) {
-                }
+                } catch (JSONException e) {valueZero();}
 
             }
         }, new Response.ErrorListener() {
@@ -133,7 +135,7 @@ public class FestivalFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
 
-                    Log.i("sadf",response.toString());
+                    Log.e("response : ",response.toString());
 
                     JSONObject object=response.getJSONObject("response");
                     object=object.getJSONObject("body");
@@ -143,7 +145,6 @@ public class FestivalFragment extends Fragment {
                     String eventstartdate=object.getString("eventstartdate");
                     String eventenddate=object.getString("eventenddate");
 
-                    //ex) 20161117 2,4,6   20161120
                     String startYY=eventstartdate.substring(2,4);
                     String startMM=eventstartdate.substring(4,6);
                     String startDD=eventstartdate.substring(6,8);
@@ -158,15 +159,30 @@ public class FestivalFragment extends Fragment {
                     adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
+                    Log.e("festival error : ",e.toString());
                 }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+//                Log.e("festival error",error.toString());
             }
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    void valueZero(){
+        if (items.size()==0){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                recyclerView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.noimageavailable));
+            } else {
+                recyclerView.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.noimageavailable));
+            }
+        }
+        else if (items.size()>0){
+            recyclerView.setBackgroundColor(Color.WHITE);
+        }
     }
 
 }

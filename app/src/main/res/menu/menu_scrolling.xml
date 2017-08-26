@@ -5,12 +5,19 @@
 
     <item android:id="@+id/menu_search"
         android:title="search"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always|collapseActionView"
         />
-    <item android:id="@+id/menu_mainimg"
-        android:title=""
-        android:icon="@drawable/fallintravel"
+    <item android:id="@+id/menu_heart"
+        android:title="heart"
+        android:icon="@drawable/heart"
+        android:checkable="true"
         app:showAsAction="always"/>
+
+    <item android:id="@+id/menu_close"
+        android:title="close"
+        android:icon="@mipmap/closefinal"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

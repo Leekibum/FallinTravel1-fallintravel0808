@@ -62,6 +62,7 @@ public class ChoicesigunguAdapter extends RecyclerView.Adapter {
                     choiceCityActivity=(ChoiceCityActivity)context;
                     G.sigunguName=tvchoice2.getText().toString();
                     G.sigunguCode=tvchoice2.getTag().toString();
+                    if (!G.isFirst)G.isFirst=true;
                     choiceCityActivity.finish();
                 }
             });

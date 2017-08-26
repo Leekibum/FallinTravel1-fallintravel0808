@@ -64,21 +64,30 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
 
 
-        if (Build.VERSION.SDK_INT>=21){ //버전 21 이상은 위에 상태바 색 변경경
-            getWindow().setStatusBarColor(0xff55ccc0);
-        }
+
 
         choiceCity();
+        choicesigungu();
 
 
     }//onCreate
 
+    public void clickAllCountry(View v){
+        setResult(G.SELECT_LOCATION);
+        G.cityname="전국";
+        G.citycode="";
+        G.sigunguName="";
+        G.sigunguCode="";
+        finish();
+    }
+
     public void clickAll(View v){
         Intent intent=getIntent();
-        setResult(22,intent);
+        setResult(G.SELECT_LOCATION,intent);
 //        Toast.makeText(context, "전체 클릭", Toast.LENGTH_SHORT).show();
         G.sigunguName="전체";
         G.sigunguCode="";
+        if (!G.isFirst)G.isFirst=true;
         finish();
     }
 
@@ -144,6 +153,7 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
 
     void choicesigungu(){
+        if (G.citycode=="")return;
         String url="http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaCode?ServiceKey="+G.serviceKey+"&areaCode="+G.citycode+"&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=AppTesting&_type=json";
 
         choiceCityItems2.clear();
@@ -190,5 +200,6 @@ public class ChoiceCityActivity extends AppCompatActivity {
 
     public void tvallnotify() {
         tvall.setText(G.cityname+"   전체");
+
     }
 }
