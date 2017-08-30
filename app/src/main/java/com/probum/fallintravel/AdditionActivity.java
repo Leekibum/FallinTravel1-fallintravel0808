@@ -80,7 +80,6 @@ public class AdditionActivity extends AppCompatActivity {
         cityname.setText("전국 ");
 
         changenaviitem();
-        changenaveLogin();
 
         RecyclerView.LayoutManager manager= new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
@@ -130,6 +129,12 @@ public class AdditionActivity extends AppCompatActivity {
         });
     }//onCreate
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        changenaviitem();
+    }
+
     void selecturl(){
         String type=intent.getStringExtra("what");
         String KorService="KorService";
@@ -151,11 +156,9 @@ public class AdditionActivity extends AppCompatActivity {
                 break;
             case G.LOGIN:
                 changenaviitem();
-                changenaveLogin();
                 break;
             case G.LOGOUT:
                 changenaviitem();
-                changenaveLogin();
                 break;
 
         }
@@ -337,12 +340,11 @@ public class AdditionActivity extends AppCompatActivity {
     void changenaviitem(){
         if (G.isLogin)navname.setText(G.nickname+" 님");else navname.setText(G.nickname);
         Glide.with(this).load(G.profile_image).into(imgcircle);
-    }
-
-    void changenaveLogin(){
         if (G.isLogin==false) navlogin.setText(" 로그인 하기 ");
         if (G.isLogin==true) navlogin.setText(" 로그아웃 ");
     }
+
+
 
     public void clickFab(View v){
         finish();
@@ -357,22 +359,24 @@ public class AdditionActivity extends AppCompatActivity {
         Intent intent1=new Intent(this,MainActivity.class);
         switch (v.getId()){
             case R.id.linear_festival:
-                intent1.putExtra("clickAddition",0);
-                setResult(88,intent1);
+                G.clickAddition=0;
                 finish();
                 break;
 
             case R.id.linear_tour:
-                intent1.putExtra("clickAddition",1);
-                setResult(88,intent1);
+                G.clickAddition=1;
                 finish();
                 break;
 
             case R.id.linear_course:
-                intent1.putExtra("clickAddition",2);
-                setResult(88,intent1);
+                G.clickAddition=2;
                 finish();
                 break;
         }
     }
+
+    public void clickBack(View v){
+        drawerLayout.closeDrawer(navi);
+    }
+
 }
