@@ -54,10 +54,6 @@ public class TourAdapter extends RecyclerView.Adapter {
             Glide.with(context).load(items.get(position).firstimage).into(myholder.img);
         }
 
-
-
-
-
     }
 
     @Override

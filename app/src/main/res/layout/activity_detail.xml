@@ -197,7 +197,7 @@
                     <TextView
                         android:id="@+id/intro2_tv2"
                         android:layout_width="match_parent"
-                        android:textColor="@color/colorBlack"
+                        android:textColor="#2378d6"
                         android:layout_height="wrap_content"
                         android:onClick="clickTel"/>
 
@@ -323,6 +323,7 @@
                         android:textColor="@color/colorBlack"/>
                     <TextView
                         android:id="@+id/intro7_tv2"
+                        android:text="야"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"/>
@@ -350,6 +351,7 @@
 
                     <TextView
                         android:id="@+id/intro8_tv2"
+                        android:text="야"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack" />
@@ -362,9 +364,63 @@
                     android:orientation="vertical"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    >
                     <TextView
                         android:id="@+id/intro9_tv1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="행사소개  "
+                        android:gravity="center_vertical"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="7dp"
+                        android:textColor="@color/colorBlack"/>
+                    <TextView
+                        android:id="@+id/intro9_tv2"
+                        android:text="야"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/intro10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_marginBottom="12dp"
+                    >
+                    <TextView
+                        android:id="@+id/intro10_tv1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="행사소개  "
+                        android:gravity="center_vertical"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="7dp"
+                        android:textColor="@color/colorBlack"/>
+                    <TextView
+                        android:id="@+id/intro10_tv2"
+                        android:text="야"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/introhome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:id="@+id/introhome_tv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="홈페이지  "
@@ -374,7 +430,7 @@
                         android:layout_marginBottom="7dp"
                         android:textColor="@color/colorBlack"/>
                     <TextView
-                        android:id="@+id/intro9_tv2"
+                        android:id="@+id/introhome_tv2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
@@ -382,9 +438,40 @@
                         android:textColor="#2378d6"/>
                 </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+                    <EditText
+                        android:id="@+id/edit_reply"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:hint="    댓글을 입력하세요"
+                        android:layout_weight="8"
+                        android:lines="1"
+                        android:imeOptions="actionSearch"
+                        android:textColor="@color/colorGray"/>
+
+                    <TextView
+                        android:id="@+id/tv_reply"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="댓글 달기"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/colorGray"
+                        android:clickable="true"
+                        android:onClick="clickSaveReply"
+                        android:background="@drawable/linegray"
+                        android:layout_margin="8dp"/>
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_reply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
 
             </LinearLayout>

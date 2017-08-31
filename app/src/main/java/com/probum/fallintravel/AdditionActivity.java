@@ -164,6 +164,12 @@ public class AdditionActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        saveData();
+        super.onDestroy();
+    }
+
     private void recyclerItemChange() {
         items.clear();
         pageNo=1;
@@ -182,6 +188,7 @@ public class AdditionActivity extends AppCompatActivity {
         editor.putString("nickname",G.nickname);
         editor.putString("profile_image",G.profile_image);
         editor.putString("arrange",G.arrange);
+        editor.putString("id",G.id);
         editor.commit();
 
     }

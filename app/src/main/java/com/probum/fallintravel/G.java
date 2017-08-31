@@ -16,9 +16,9 @@ public class G {
     static String sigunguName="시군구선택";
     static String sigunguCode="1";
     static String TOUR="12";
+    static String cultural="14";
     static String festival="15";
     static String course="25";
-    static String cultural="14";
     static String lports="28";
     static String stay="32";
     static String shopping="38";
@@ -30,10 +30,11 @@ public class G {
     static final int SELECT_LOCATION=44;
     static boolean isLogin=false;
     static boolean isFirst=false;
+    static String id="";
     static String nickname="로그인을 해주세요";
     static String profile_image="https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png";
 
-
+    static int clickAddition=0;
 
 }
 

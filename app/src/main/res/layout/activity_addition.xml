@@ -52,6 +52,10 @@
                             android:gravity="center"
                             android:layout_marginLeft="40dp"
                             android:elevation="2dp"
+                            android:shadowColor="@color/colorGray"
+                            android:shadowDx="5.0"
+                            android:shadowDy="5.0"
+                            android:shadowRadius="5.0"
                             android:textColor="@color/colorWhite"
                             android:visibility="invisible"/>
 

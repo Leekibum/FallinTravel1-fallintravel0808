@@ -4,6 +4,9 @@ package com.probum.fallintravel;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -18,6 +21,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +38,8 @@ import com.bumptech.glide.Glide;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -71,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         changenaviitem();
-        changenaveLogin();
+        HashHash();
 
 //        typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
 //        SpannableString spannableString=new SpannableString("여행에 빠지다");
@@ -179,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("nickname",G.nickname);
         editor.putString("profile_image",G.profile_image);
         editor.putString("arrange",G.arrange);
+        editor.putString("id",G.id);
         editor.commit();
 
     }
@@ -194,18 +202,18 @@ public class MainActivity extends AppCompatActivity {
         G.nickname=pref.getString("nickname"," 로그인을 해주세요 ");
         G.arrange=pref.getString("arrange","D");
         G.isFirst=pref.getBoolean("isFirst",false);
+        G.id=pref.getString("id","");
         G.profile_image=pref.getString("profile_image","https://raw.githubusercontent.com/Leekibum/FallinTravel1-fallintravel0808/50e8dbf96beaf25e06f735f5e071c272787bfe41/account.png");
     }
 
     void changenaviitem(){
         if (G.isLogin)navname.setText(G.nickname+" 님");else navname.setText(G.nickname);
         Glide.with(this).load(G.profile_image).into(imgcircle);
-    }
-
-    void changenaveLogin(){
         if (G.isLogin==false) navlogin.setText(" 로그인 하기 ");
         if (G.isLogin==true) navlogin.setText(" 로그아웃 ");
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -221,8 +229,9 @@ public class MainActivity extends AppCompatActivity {
         if (G.arrange.equals("A"))num=0; else if (G.arrange.equals("B"))num=1; else if (G.arrange.equals("C")) num=2; else if (G.arrange.equals("D")) num=3;
         spin.setSelection(num);
         super.onStart();
-        changenaveLogin();
         changenaviitem();
+        changeNaviPosition(G.clickAddition);
+
     }
 
     @Override
@@ -336,15 +345,11 @@ public class MainActivity extends AppCompatActivity {
 
             case G.LOGIN:
                     changenaviitem();
-                    changenaveLogin();
                 break;
             case G.LOGOUT:
                 changenaviitem();
-                changenaveLogin();
                 break;
-            case 88:
-                changeNaviPosition(data.getIntExtra("clickAddition",0));
-                break;
+
         }
 
           }
@@ -362,4 +367,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void HashHash() {
+
+        try {
+            PackageInfo Info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : Info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.e("키", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+
+        }
+    }
 }
+
+

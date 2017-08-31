@@ -189,7 +189,7 @@ public class LoginoutActivity extends AppCompatActivity {
     private class RequestApiTask extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {
-            ; //실행되면 doInBackground가 새로 작업하는동안 전의 작업 내용을 지움.
+             //실행되면 doInBackground가 새로 작업하는동안 전의 작업 내용을 지움.
         }
 
         @Override
@@ -206,6 +206,7 @@ public class LoginoutActivity extends AppCompatActivity {
             if (mUserInfoMap.get("nickname") == null) {
                 Toast.makeText(mContext, "로그인 실패하였습니다. 잠시후 다시 시도해주세요", Toast.LENGTH_SHORT).show();
             } else {
+                G.id=mUserInfoMap.get("id");
                 G.nickname = mUserInfoMap.get("nickname");
                 G.profile_image = mUserInfoMap.get("profile_image");
                 G.isLogin = true;
@@ -334,7 +335,7 @@ public class LoginoutActivity extends AppCompatActivity {
 //                user_nickname.setText(userProfile.getNickname());
 //                user_email.setText(userProfile.getEmail());
 //                aQuery.id(user_img).image(userProfile.getThumbnailImagePath()); // <- 프로필 작은 이미지 , userProfile.getProfileImagePath() <- 큰 이미지
-
+                G.id=userProfile.getEmail();
                 G.nickname = userProfile.getNickname();
                 G.profile_image = userProfile.getThumbnailImagePath();
                 G.isLogin = true;

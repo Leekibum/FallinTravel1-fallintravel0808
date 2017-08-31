@@ -29,7 +29,8 @@
         <activity android:name=".ChoiceCityActivity" />
         <activity
             android:name=".DetailActivity"
-            android:theme="@style/Theme.MyDialog" />
+            android:theme="@style/Theme.MyDialog"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".LoginoutActivity" />
 
         <meta-data
