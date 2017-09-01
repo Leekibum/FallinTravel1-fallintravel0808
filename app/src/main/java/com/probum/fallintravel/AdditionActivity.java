@@ -127,12 +127,26 @@ public class AdditionActivity extends AppCompatActivity {
                 }
             }
         });
+        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                isnavislide=true;
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                isnavislide=false;
+            }
+        });
     }//onCreate
 
     @Override
     protected void onStart() {
         super.onStart();
         changenaviitem();
+        if (!intent.getStringExtra("what").equals("searchKeyword"))cityname.setText(G.cityname + " " +G.sigunguName);
     }
 
     void selecturl(){
@@ -141,6 +155,8 @@ public class AdditionActivity extends AppCompatActivity {
         if (type.equals("searchKeyword")){
             url="http://api.visitkorea.or.kr/openapi/service/rest/"+KorService+"/"+type+"?ServiceKey="+G.serviceKey+"&keyword="+intent.getStringExtra("keyword")+"&areaCode="+citycode+"&sigunguCode="+sigunguCode+"&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange="+G.arrange+"&numOfRows=12&pageNo="+pageNo+"&_type=json";
         }
+        else url="http://api.visitkorea.or.kr/openapi/service/rest/"+KorService+"/areaBasedList?ServiceKey="+G.serviceKey+"&contentTypeId="+type+"&areaCode="+G.citycode+"&sigunguCode="+G.sigunguCode+"&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange="+G.arrange+"&numOfRows=12&pageNo="+pageNo+"&_type=json";
+
 
     }
 
@@ -168,6 +184,12 @@ public class AdditionActivity extends AppCompatActivity {
     protected void onDestroy() {
         saveData();
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isnavislide==true) drawerLayout.closeDrawer(navi);
+        else super.onBackPressed();
     }
 
     private void recyclerItemChange() {
@@ -363,7 +385,7 @@ public class AdditionActivity extends AppCompatActivity {
     }
 
     public void clickNavItem(View v){
-        Intent intent1=new Intent(this,MainActivity.class);
+        Intent intent1=new Intent(this,AdditionActivity.class);
         switch (v.getId()){
             case R.id.linear_festival:
                 G.clickAddition=0;
@@ -377,6 +399,29 @@ public class AdditionActivity extends AppCompatActivity {
 
             case R.id.linear_course:
                 G.clickAddition=2;
+                finish();
+                break;
+            case R.id.linear_lports:
+                intent1.putExtra("what",G.lports);
+                startActivity(intent1);
+                finish();
+                break;
+
+            case R.id.linear_stay:
+                intent1.putExtra("what",G.stay);
+                startActivity(intent1);
+                finish();
+                break;
+
+            case R.id.linear_shopping:
+                intent1.putExtra("what",G.shopping);
+                startActivity(intent1);
+                finish();
+                break;
+
+            case R.id.linear_eatery:
+                intent1.putExtra("what",G.eatery);
+                startActivity(intent1);
                 finish();
                 break;
         }

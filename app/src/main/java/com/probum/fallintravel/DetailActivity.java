@@ -113,7 +113,7 @@ public class DetailActivity extends AppCompatActivity {
 
         if (!G.isLogin)editreply.setFocusableInTouchMode(false);
         editreply.setOnTouchListener(onTouchListener);
-        if (G.isLogin)editreply.setHint("댓글을 입력하세요");else if (!G.isLogin)editreply.setHint("댓글을 입력하려면 로그인을 해주세요.");
+        if (G.isLogin)editreply.setHint("리뷰를 입력하세요");else if (!G.isLogin)editreply.setHint("리뷰를 입력하려면 로그인을 해주세요.");
 
         readCommon();
         readIntro();
@@ -187,8 +187,8 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (G.isLogin){editreply.setFocusableInTouchMode(true);editreply.setHint("댓글을 입력하세요");}
-        else if (!G.isLogin)editreply.setHint("댓글을 입력하려면 로그인을 해주세요.");
+        if (G.isLogin){editreply.setFocusableInTouchMode(true);editreply.setHint("리뷰를 입력하세요");}
+        else if (!G.isLogin)editreply.setHint("리뷰를 입력하려면 로그인을 해주세요.");
     }
 
     void dialog(){
@@ -223,7 +223,7 @@ public class DetailActivity extends AppCompatActivity {
                     if (!G.isLogin){dialog();}
                     else if (G.isLogin && isReply()){
                             editreply.setFocusableInTouchMode(false);
-                        Toast.makeText(DetailActivity.this, "이미 댓글을 입력하셨습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailActivity.this, "이미 리뷰를 입력하셨습니다.", Toast.LENGTH_SHORT).show();
                     }
                     break;
 
@@ -364,6 +364,39 @@ public class DetailActivity extends AppCompatActivity {
                         intro9.setVisibility(View.GONE);
                     }
 
+                    if (contenttypeid.equals(G.stay)){
+                        if (object.has("goodstay")&&object.getString("goodstay").equals("1")){tv1s[2].setText("굿스테이 인증업체"); tv2s[2].setVisibility(View.GONE);} else intro2.setVisibility(View.GONE);
+                        if (object.has("roomtype") &&!object.getString("roomtype").equals("")){tv1s[3].setText("객실종류"); tv2s[3].setText(object.getString("roomtype"));} else intro3.setVisibility(View.GONE);
+                        if (object.has("roomcount")){tv1s[4].setText("총 객실 수"); tv2s[4].setText(object.getString("roomcount"));} else intro4.setVisibility(View.GONE);
+                        if (object.has("checkintime") &&object.has("checkouttime")){tv1s[5].setText("입실 , 퇴실 시간"); tv2s[5].setText("입실 : "+object.getString("checkintime")+"\n"+"퇴실 : "+object.getString("checkouttime"));}else intro5.setVisibility(View.GONE);
+                        if (object.has("pickup")) {tv1s[6].setText("픽업 서비스"); tv2s[6].setText(object.getString("pickup"));}else intro6.setVisibility(View.GONE);
+                        intro7.setVisibility(View.GONE);
+                        intro8.setVisibility(View.GONE);
+                        intro9.setVisibility(View.GONE);
+                    }
+
+                    if (contenttypeid.equals(G.shopping)){
+                        if (object.has("opentime")){tv1s[2].setText("영업시간"); tv2s[2].setText(object.getString("opentime"));}else intro2.setVisibility(View.GONE);
+                        if (object.has("fairday")){tv1s[3].setText("장 서는날");tv2s[3].setText(object.getString("fairday"));}else intro3.setVisibility(View.GONE);
+                        if (object.has("shopguide")){tv1s[4].setText("매장안내"); tv2s[4].setText(object.getString("shopguide"));}else intro4.setVisibility(View.GONE);
+                        if (object.has("restdateshopping")){tv1s[5].setText("쉬는날 ");tv2s[5].setText(object.getString("restdateshopping"));}else intro5.setVisibility(View.GONE);
+                        intro6.setVisibility(View.GONE);
+                        intro7.setVisibility(View.GONE);
+                        intro8.setVisibility(View.GONE);
+                        intro9.setVisibility(View.GONE);
+                    }
+                    if (contenttypeid.equals(G.eatery)){
+                        if (object.has("firstmenu")){tv1s[2].setText("대표 메뉴");  tv2s[2].setText(object.getString("firstmenu"));}else intro2.setVisibility(View.GONE);
+                        if (object.has("treatmenu")){tv1s[3].setText("메뉴들");  tv2s[3].setText(object.getString("treatmenu"));}else intro3.setVisibility(View.GONE);
+                        if (object.has("packing")){tv1s[4].setText("포장 가능여부"); tv2s[4].setText(object.getString("packing"));}else intro4.setVisibility(View.GONE);
+                        if (object.has("opentimefood")){tv1s[5].setText("영업 시간");tv2s[5].setText(object.getString("opentimefood"));}else intro5.setVisibility(View.GONE);
+                        if (object.has("restdatefood")){tv2s[5].append("\n쉬는날 : "+object.getString("restdatefood"));} else intro5.setVisibility(View.GONE);
+                        if (object.has("discountinfofood")){tv1s[6].setText("할인 정보");tv2s[6].setText(object.getString("discountinfofood"));}else intro6.setVisibility(View.GONE);
+                        intro7.setVisibility(View.GONE);
+                        intro8.setVisibility(View.GONE);
+                        intro9.setVisibility(View.GONE);
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -413,7 +446,7 @@ public class DetailActivity extends AppCompatActivity {
                                 } else intro7.setVisibility(View.GONE);
                             }
 
-                            if (contenttypeid.equals(G.lports)){
+                            if (contenttypeid.equals(G.lports) && contenttypeid.equals(G.shopping)){
                                 if (i>2)return;
                                 if (object.has("fldgubun"))linears[7+i].setVisibility(View.VISIBLE);
                                 if (object.has("infoname")) {tv1s[7+i].setText(changeText(object.getString("infoname")));}
@@ -641,16 +674,16 @@ public class DetailActivity extends AppCompatActivity {
         if (contenttypeid.equals("15")) typeid="festival";
         if (contenttypeid.equals("25")) typeid="course";
         if (contenttypeid.equals("28")) typeid="lports";
-        if (contenttypeid.equals("32")) typeid="shopping";
-        if (contenttypeid.equals("38")) typeid="eatery";
-        if (contenttypeid.equals("39")) typeid="arrange";
+        if (contenttypeid.equals("32")) typeid="stay";
+        if (contenttypeid.equals("38")) typeid="shopping";
+        if (contenttypeid.equals("39")) typeid="eatery";
 
         return typeid;
     }
 
     public void clickSaveReply(View v){
         if (isReply()) {
-            Toast.makeText(this, "이미 댓글을 입력하셨습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "이미 리뷰를 입력하셨습니다.", Toast.LENGTH_SHORT).show();
         }
         else if (editreply.length()<4) Toast.makeText(this, "4글자 이상 입력해주세요", Toast.LENGTH_SHORT).show();
         else if (editreply.length()>=4 &&isReply()==false){
@@ -712,7 +745,7 @@ public class DetailActivity extends AppCompatActivity {
                         public void run() {
                             editreply.setFocusable(false);
                             editreply.setFocusableInTouchMode(false);
-                            Toast.makeText(DetailActivity.this, "댓글을 달았습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DetailActivity.this, "리뷰를 달았습니다.", Toast.LENGTH_SHORT).show();
                             editreply.setText("");
                             loadReply();
                         }
@@ -730,7 +763,26 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void clickReplyDelte(View v) {
-        replyDelete();
+
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
+        alert_confirm.setMessage("리뷰를 지우시겠습니까 ?").setCancelable(false).setPositiveButton("확인",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        replyDelete();
+                        // 'YES'
+                    }
+                }).setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 'No'
+                        return;
+                    }
+                });
+        AlertDialog alert = alert_confirm.create();
+        alert.show();
+
     }
 
     void replyDelete(){
@@ -748,7 +800,7 @@ public class DetailActivity extends AppCompatActivity {
                     loadReply();
                     editreply.setFocusable(true);
                     editreply.setFocusableInTouchMode(true);
-                    Toast.makeText(DetailActivity.this, "댓글을 지웠습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailActivity.this, "리뷰를 지웠습니다.", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -848,6 +900,9 @@ public class DetailActivity extends AppCompatActivity {
 
         if (tel.contains(",")){
             tel=tel.substring(0,tel.indexOf(","));
+        }
+        if (tel.contains("~")){
+            tel=tel.substring(0,tel.indexOf("~"));
         }
 
         return tel;

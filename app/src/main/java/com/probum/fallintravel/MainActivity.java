@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         changenaviitem();
-        HashHash();
+//        HashHash();
 
 //        typeface = Typeface.createFromAsset(getAssets(),"ssanaiL.ttf");
 //        SpannableString spannableString=new SpannableString("여행에 빠지다");
@@ -246,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickNavItem(View v){
+        Intent intent1=new Intent(this,AdditionActivity.class);
         switch (v.getId()){
 
             case R.id.linear_festival:
@@ -260,6 +261,30 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.linear_course:
                 changeNaviPosition(2);
+                drawerLayout.closeDrawer(navi);
+                break;
+
+            case R.id.linear_lports:
+                intent1.putExtra("what",G.lports);
+                startActivity(intent1);
+                drawerLayout.closeDrawer(navi);
+                break;
+
+            case R.id.linear_stay:
+                intent1.putExtra("what",G.stay);
+                startActivity(intent1);
+                drawerLayout.closeDrawer(navi);
+                break;
+
+            case R.id.linear_shopping:
+                intent1.putExtra("what",G.shopping);
+                startActivity(intent1);
+                drawerLayout.closeDrawer(navi);
+                break;
+
+            case R.id.linear_eatery:
+                intent1.putExtra("what",G.eatery);
+                startActivity(intent1);
                 drawerLayout.closeDrawer(navi);
                 break;
         }

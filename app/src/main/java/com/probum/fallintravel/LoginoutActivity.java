@@ -331,7 +331,7 @@ public class LoginoutActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(UserProfile userProfile) {
-                Log.e("onSuccess",userProfile.toString());
+//                Log.e("onSuccess",userProfile.toString());
 //                user_nickname.setText(userProfile.getNickname());
 //                user_email.setText(userProfile.getEmail());
 //                aQuery.id(user_img).image(userProfile.getThumbnailImagePath()); // <- 프로필 작은 이미지 , userProfile.getProfileImagePath() <- 큰 이미지
